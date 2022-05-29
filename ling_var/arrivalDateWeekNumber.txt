@@ -1,0 +1,7 @@
+arrivalDateWeekNumber
+false,1,53,1
+for the winter,2,1,2,8,14
+for the spring,2,9,15,21,27
+for the summer,2,22,28,34,40
+for the autumn,2,35,41,47,53
+for the winter,1,48,53,53

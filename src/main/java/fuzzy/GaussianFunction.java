@@ -2,9 +2,11 @@ package fuzzy;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 import static java.lang.Math.floor;
 
+@ToString
 public class GaussianFunction extends MembershipFunction {
     @Getter
     private final Double middle;
@@ -20,15 +22,16 @@ public class GaussianFunction extends MembershipFunction {
 
     @Override
     public Double calcCardinality() {
-        if(getUniverse().getIsContinuous()) {
-            return getUniverse().getRightLimit()-getUniverse().getLeftLimit();
-        } else {
-            int count=0;
-            double cardinalityStart = getUniverse().getLeftLimit();
-            double cardinalityEnd =  getUniverse().getRightLimit()-
-                    (getUniverse().getRightLimit()% getUniverse().getInterval()<0.0000001?0.0: getUniverse().getInterval());
-            return floor(((cardinalityEnd-getUniverse().getLeftLimit())/getUniverse().getInterval()))+1;
+        if(getCardinality()==null) {
+            if(getUniverse().getIsContinuous()) {
+                setCardinality(getUniverse().getRightLimit()-getUniverse().getLeftLimit());
+            } else {
+                double cardinalityEnd =  getUniverse().getRightLimit()-
+                        (getUniverse().getRightLimit()% getUniverse().getInterval()<0.0000001?0.0: getUniverse().getInterval());
+                setCardinality(floor(((cardinalityEnd-getUniverse().getLeftLimit())/getUniverse().getInterval()))+1);
+            }
         }
+        return getCardinality();
     }
 
 
@@ -36,6 +39,6 @@ public class GaussianFunction extends MembershipFunction {
     public Double calcValue(Double x) {
         if(!getUniverse().inUniverse(x))
             throw(new IllegalArgumentException("Value not in universe of discourse!"));
-        return Math.exp(-(((x-middle)*(x-middle))/2*variance*variance));
+        return Math.exp(-(((x-middle)*(x-middle))/(2*variance*variance)));
     }
 }

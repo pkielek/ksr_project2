@@ -1,0 +1,6 @@
+numberOfChildren
+false,0,10,1
+none of,1,0,0,1
+little,1,0,2,4
+a few,1,2,4,8
+many,1,5,10,10

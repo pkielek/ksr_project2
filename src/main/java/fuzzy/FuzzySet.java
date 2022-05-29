@@ -1,14 +1,17 @@
 package fuzzy;
 
+import lombok.Getter;
 import model.HotelBookingRepository;
 import model.NumericVariable;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FuzzySet implements SummarySet<FuzzySet> {
+    @Getter
     private TreeMap<Integer,Double> entries;
 
     public FuzzySet(LinguisticVariable variable, String label) {
@@ -20,6 +23,17 @@ public class FuzzySet implements SummarySet<FuzzySet> {
             entries.put(i,function.calcValue(HBR.getBooking(i).getNumericVariable(variableName)));
         }
     }
+    public FuzzySet(CrispSet set, LinguisticVariable variable, String label) {
+        entries = new TreeMap<>();
+        HotelBookingRepository HBR = HotelBookingRepository.getInstance();
+        TreeSet<Integer> universe = set.inSet();
+        universe.forEach((elem) -> {
+            NumericVariable variableName = variable.getName();
+            MembershipFunction function = variable.getLabels().get(label);
+            entries.put(elem,function.calcValue(HBR.getBooking(elem).getNumericVariable(variableName)));
+        });
+    }
+
     public FuzzySet(TreeMap<Integer, Double> entries) {
         this.entries=entries;
     }

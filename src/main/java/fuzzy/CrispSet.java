@@ -7,6 +7,7 @@ import model.StringVariable;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,10 +15,13 @@ public class CrispSet implements SummarySet<CrispSet> {
     @Getter
     private final StringVariable variable;
     @Getter
+    private final String filterValue;
+    @Getter
     private TreeMap<Integer, Boolean> entries;
 
     public CrispSet(StringVariable variable, String filterValue) {
         this.variable = variable;
+        this.filterValue = filterValue;
         this.entries = new TreeMap<>();
         if (CountryCode.findByName(filterValue).isEmpty()) {
             throw new IllegalArgumentException("No such country found");
@@ -30,6 +34,7 @@ public class CrispSet implements SummarySet<CrispSet> {
 
     public CrispSet(TreeMap<Integer, Boolean> entries) {
         this.variable = StringVariable.undefined;
+        this.filterValue = "";
         this.entries = entries;
     }
 
@@ -37,6 +42,12 @@ public class CrispSet implements SummarySet<CrispSet> {
         long count = entries.values().stream().filter(e -> e).count();
         return (int) count;
     }
+
+    public TreeSet<Integer> inSet() {
+        return new TreeSet<>(entries.entrySet().stream().filter(Map.Entry::getValue).collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue,
+        (existing, replacement) -> replacement, TreeMap::new)).keySet());
+    }
+
 
     @Override
     public CrispSet And(CrispSet set) {

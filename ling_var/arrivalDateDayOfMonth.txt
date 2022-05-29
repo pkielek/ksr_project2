@@ -1,0 +1,5 @@
+arrivalDateDayOfMonth
+false,1,31,1
+for beginning of the month,0,1,6
+for middle of the month,0,16,6
+for end of the month,0,31,6

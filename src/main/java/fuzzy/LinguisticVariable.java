@@ -3,16 +3,18 @@ package fuzzy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 import model.NumericVariable;
 
 import java.util.HashMap;
 
+@ToString
 @AllArgsConstructor
 public class LinguisticVariable {
     @Getter
-    NumericVariable name;
+    private final NumericVariable name;
     @Getter
-    HashMap<String, MembershipFunction> labels;
+    private HashMap<String, MembershipFunction> labels;
     @Getter
-    UniverseOfDiscourse universe;
+    private final UniverseOfDiscourse universe;
 }
