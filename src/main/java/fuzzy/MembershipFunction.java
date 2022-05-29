@@ -14,7 +14,8 @@ public abstract class MembershipFunction {
         this.universe = universe;
     }
 
-    abstract Double calcValue(Double x);
+    public abstract Double calcCardinality();
+    public abstract Double calcValue(Double x);
     public Double calcArea() {
         Double area = 0.0;
         if(!getUniverse().getIsContinuous()) {
