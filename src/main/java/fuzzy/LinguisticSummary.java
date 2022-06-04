@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 
 public abstract class LinguisticSummary {
@@ -18,9 +19,21 @@ public abstract class LinguisticSummary {
     private String quantifierLabel;
     @Getter
     @Setter
-    private FuzzySet resultSet;
+    private FuzzySet summaryResultSet;
     @Getter
     @Setter
-    private HashMap<String,Double> qualityMeasures = new HashMap<>();
+    private FuzzySet qualifierResultSet;
+    @Getter
+    @Setter
+    private TreeMap<String,String> summarizersByVariableAndLabel;
+    @Getter
+    @Setter
+    private TreeMap<String,String> qualifiersByVariableAndLabel;
+    @Getter
+    @Setter
+    private HashMap<String,Double> qualityMeasures;
+    @Getter
+    @Setter
+    private CrispSet subject;
     public abstract Double optimalMeasure();
 }

@@ -11,7 +11,7 @@ import static model.DatabaseInitialize.DATABASE_URL;
 public class HotelBookingRepository {
 
     public static final Integer MIN_INDEX_DATABASE = 0;
-    public static final Integer MAX_INDEX_DATABASE = 2500;
+    public static final Integer MAX_INDEX_DATABASE = 2000;
 
     private static HotelBookingRepository instance;
     private TreeMap<Integer,HotelBooking> loadedData;

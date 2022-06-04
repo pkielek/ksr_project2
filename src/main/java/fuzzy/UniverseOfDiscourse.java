@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.floor;
 
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class UniverseOfDiscourse {
             return false;
         if (isContinuous)
             return true;
-        return (x-leftLimit)%interval<0.0000001;
+        return (x-leftLimit)%interval<0.0000001 || interval-((x-leftLimit)%interval)<0.0000001;
     }
 
     public Double calcCardinality() {

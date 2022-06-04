@@ -12,9 +12,6 @@ public abstract class MembershipFunction {
     @Getter
     @Setter
     private Double area=null;
-    @Getter
-    @Setter
-    private Integer supportCount=null;
 
     public MembershipFunction(UniverseOfDiscourse universe) {
         this.universe = universe;

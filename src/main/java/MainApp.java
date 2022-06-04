@@ -1,6 +1,7 @@
 import fuzzy.CrispSet;
 import fuzzy.FirstFormSingleSummary;
 import fuzzy.LinguisticVariableRepository;
+import fuzzy.SecondFormSingleSummary;
 import model.HotelBookingRepository;
 import model.NumericVariable;
 import model.StringVariable;
@@ -15,7 +16,7 @@ public class MainApp {
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         LBR.loadAllVariables();
 
-        new FirstFormSingleSummary(new CrispSet(StringVariable.countryCode,"Portugal"),true,"a lot of",new TreeMap(Map.of("arrivalDateWeekNumber","for the summer")));
+        new SecondFormSingleSummary(null,true,"all",new TreeMap(Map.of("bookingChanges","little","adr","very low")),new TreeMap(Map.of("numberOfAdults","little")));
 
     }
 

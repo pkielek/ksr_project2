@@ -1,6 +1,6 @@
 bookingChanges
-false,0,10,1
+false,0,21,1
 without,1,0,0,1
 little,1,0,2,4
 few,1,2,4,6
-many,2,4,8,10,10
+many,2,4,8,21,21

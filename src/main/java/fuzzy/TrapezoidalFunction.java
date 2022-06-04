@@ -29,15 +29,20 @@ public class TrapezoidalFunction extends MembershipFunction {
     @Override
     public Double calcCardinality() {
         if(getCardinality()==null) {
-            if(getUniverse().getIsContinuous()) {
-                setCardinality(end-start);
+            if (getUniverse().getIsContinuous()) {
+                setCardinality(end - start);
             } else {
-                double cardinalityStart = start > getUniverse().getLeftLimit()?start: getUniverse().getLeftLimit();
-                double cardinalityEnd =  end < getUniverse().getRightLimit()?end: getUniverse().getRightLimit()-
-                        (getUniverse().getRightLimit()% getUniverse().getInterval()<0.0000001?0.0: getUniverse().getInterval());
-                setCardinality(floor(((cardinalityEnd-cardinalityStart)/getUniverse().getInterval()))+1);
+                boolean startGreaterThanLeftLimit = start >= getUniverse().getLeftLimit();
+                boolean endLessEqualThanRightLimit = end <= getUniverse().getRightLimit();
+                double cardinalityStart = startGreaterThanLeftLimit ? start : getUniverse().getLeftLimit();
+                double cardinalityEnd = endLessEqualThanRightLimit ? end : getUniverse().getRightLimit() -
+                        (getUniverse().getRightLimit() % getUniverse().getInterval() < 0.0000001 ? 0.0 : getUniverse().getInterval());
+                setCardinality(floor(((cardinalityEnd - cardinalityStart) / getUniverse().getInterval())) + 1
+                        - (startGreaterThanLeftLimit ? 1 : 0) - (endLessEqualThanRightLimit ? 1 : 0));
             }
         }
+        if(getCardinality()<0)
+            setCardinality(0.0);
         return getCardinality();
     }
 

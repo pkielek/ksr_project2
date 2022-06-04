@@ -13,24 +13,25 @@ import java.util.stream.Stream;
 public class FuzzySet implements SummarySet<FuzzySet> {
     @Getter
     private TreeMap<Integer,Double> entries;
+    private MembershipFunction membershipFunction;
 
-    public FuzzySet(LinguisticVariable variable, String label) {
+    public FuzzySet(NumericVariable variable, MembershipFunction membershipFunction) {
         entries = new TreeMap<>();
         HotelBookingRepository HBR = HotelBookingRepository.getInstance();
+        this.membershipFunction = membershipFunction;
         for(int i=HotelBookingRepository.MIN_INDEX_DATABASE;i<=HotelBookingRepository.MAX_INDEX_DATABASE;i++) {
-            NumericVariable variableName = variable.getName();
-            MembershipFunction function = variable.getLabels().get(label);
-            entries.put(i,function.calcValue(HBR.getBooking(i).getNumericVariable(variableName)));
+
+            entries.put(i,this.membershipFunction.calcValue(HBR.getBooking(i).getNumericVariable(variable)));
         }
     }
-    public FuzzySet(CrispSet set, LinguisticVariable variable, String label) {
+    public FuzzySet(CrispSet subject, NumericVariable variable, MembershipFunction membershipFunction) {
         entries = new TreeMap<>();
         HotelBookingRepository HBR = HotelBookingRepository.getInstance();
-        TreeSet<Integer> universe = set.inSet();
+        TreeSet<Integer> universe = subject.inSet();
+        this.membershipFunction = membershipFunction;
         universe.forEach((elem) -> {
-            NumericVariable variableName = variable.getName();
-            MembershipFunction function = variable.getLabels().get(label);
-            entries.put(elem,function.calcValue(HBR.getBooking(elem).getNumericVariable(variableName)));
+
+            entries.put(elem,membershipFunction.calcValue(HBR.getBooking(elem).getNumericVariable(variable)));
         });
     }
 
