@@ -87,19 +87,19 @@ public class SecondFormSingleSummary extends LinguisticSummary {
         });
 
 
-        t1();
-        t2();
-        t3();
-        t4();
-        t5();
-        t6();
-        t7();
-        t8();
-        t9();
-        t10();
-        t11();
-        System.out.println(getQualityMeasures());
-        System.out.println(optimalMeasure());
+//        t1();
+//        t2();
+//        t3();
+//        t4();
+//        t5();
+//        t6();
+//        t7();
+//        t8();
+//        t9();
+//        t10();
+//        t11();
+//        System.out.println(getQualityMeasures());
+//        System.out.println(optimalMeasure());
     }
 
     private void initializeWeights() {

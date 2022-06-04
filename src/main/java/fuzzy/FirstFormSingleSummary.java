@@ -54,19 +54,19 @@ public class FirstFormSingleSummary extends LinguisticSummary {
                         :new FuzzySet(subject,LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v)))));
             }
         });
-        System.out.println(t1());
-        System.out.println(t2());
-        System.out.println(t3());
-        System.out.println(t4());
-        System.out.println(t5());
-        System.out.println(t6());
-        System.out.println(t7());
-        System.out.println(t8());
-        System.out.println(t9());
-        System.out.println(t10());
-        System.out.println(t11());
-        initializeWeights();
-        System.out.println(optimalMeasure());
+//        System.out.println(t1());
+//        System.out.println(t2());
+//        System.out.println(t3());
+//        System.out.println(t4());
+//        System.out.println(t5());
+//        System.out.println(t6());
+//        System.out.println(t7());
+//        System.out.println(t8());
+//        System.out.println(t9());
+//        System.out.println(t10());
+//        System.out.println(t11());
+//        initializeWeights();
+//        System.out.println(optimalMeasure());
     }
 
     private void initializeWeights() {
