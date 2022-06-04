@@ -69,7 +69,7 @@ public class SecondFormSingleSummary extends LinguisticSummary {
         });
 
 
-        if(summarizersByVariableAndLabel.isEmpty()) {
+        if(qualifiersByVariableAndLabel.isEmpty()) {
             throw new IllegalArgumentException("No qualifiers in summary");
         }
         String firstQualifierKey = qualifiersByVariableAndLabel.firstKey();

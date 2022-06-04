@@ -16,4 +16,12 @@ public abstract class MultiLinguisticSummary extends LinguisticSummary{
     @Getter
     @Setter
     private FuzzySet secondSummaryResultSet;
+    @Getter
+    @Setter
+    private Double t;
+
+    @Override
+    public Double optimalMeasure() {
+        return getT();
+    }
 }
