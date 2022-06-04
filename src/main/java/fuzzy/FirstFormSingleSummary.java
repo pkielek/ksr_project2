@@ -87,7 +87,8 @@ public class FirstFormSingleSummary extends LinguisticSummary {
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         getQualityMeasures().put("t1",LBR.getVariables().get(isRelativeQuantifier()?NumericVariable.relativeQuantifier:NumericVariable.absoluteQuantifier)
                 .getLabels().get(getQuantifierLabel()).calcValue(
-                        getSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum)/ getSummaryResultSet().getEntries().size()
+                        getSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum)/
+                                (isRelativeQuantifier()?getSummaryResultSet().getEntries().size():1.0)
                 ));
         return getQualityMeasures().get("t1");
     }

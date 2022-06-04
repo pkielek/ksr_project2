@@ -15,9 +15,8 @@ public class MainApp {
     public static void main(String[] args) {
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         LBR.loadAllVariables();
-
-        new SecondFormSingleSummary(null,true,"all",new TreeMap(Map.of("bookingChanges","little","adr","very low")),new TreeMap(Map.of("numberOfAdults","little")));
-
+        FirstFormSingleSummary firstFormSingleSummary21 = new FirstFormSingleSummary(null,false,"less than 10000",new TreeMap(Map.of("leadTime","short")));
+        //new SecondFormSingleSummary(null,true,"hardly any",new TreeMap(Map.of("bookingChanges","little","adr","very low")),new TreeMap(Map.of("numberOfAdults","little")));
     }
 
 

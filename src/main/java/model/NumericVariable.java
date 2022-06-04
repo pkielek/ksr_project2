@@ -9,7 +9,7 @@ public enum NumericVariable {
     relativeQuantifier(true,"","","",false),
     absoluteQuantifier(true,"","","",false),
     leadTime(false,"lead time","have","having",false),
-    arrivalDateWeekNumber(false,"made","are","being",true),
+//    arrivalDateWeekNumber(false,"made","are","being",true),
     arrivalDateDayOfMonth(false,"made","are","being",true),
     staysInWeekendNights(false,"stays in weekend nights","have","having",false),
     staysInWeekNights(false,"stays in week nights","have","having",false),

@@ -50,10 +50,10 @@ public class TrapezoidalFunction extends MembershipFunction {
     public Double calcValue(Double x){
         if(!getUniverse().inUniverse(x))
             throw(new IllegalArgumentException("Value not in universe of discourse!"));
-        if(x<start||x>end)
-            return 0.0;
         if(x>=startMiddle&&x<= endMiddle)
             return 1.0;
+        if(x<start||x>end)
+            return 0.0;
         if(x<=startMiddle)
             return (x-start)/(startMiddle-start);
         return (end-x)/(end-endMiddle);
