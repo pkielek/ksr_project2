@@ -89,7 +89,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
             }
         });
 
-
+        initializeWeights();
+        calcMeasures();
     }
 
     private void initializeWeights() {
@@ -104,6 +105,20 @@ public class SecondFormSingleSummary extends LinguisticSummary {
         weights.put("t9",1.0);
         weights.put("t10",1.0);
         weights.put("t11",1.0);
+    }
+
+    private void calcMeasures() {
+        t1();
+        t2();
+        t3();
+        t4();
+        t5();
+        t6();
+        t7();
+        t8();
+        t9();
+        t10();
+        t11();
     }
 
     public Double t1() {

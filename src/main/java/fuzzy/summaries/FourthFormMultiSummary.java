@@ -41,7 +41,10 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
                 summarizerSummary.append(variable.getSummarizerPrefix()).append(" ").append(v).append(" ").append(variable.getSummarizerTitle());
             }
         });
-
+        setSummary(
+                "More reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
+                        + " than reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
+                        + summarizerSummary);
 
         if (summarizersByVariableAndLabel.isEmpty()) {
             throw new IllegalArgumentException("No summarizers in summary");
@@ -71,7 +74,6 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
                 }
         );
         setT(1.0-inclusionMembershipFunctionValues.stream().reduce(0.0,Double::sum)/ inclusionMembershipFunctionValues.size());
-        System.out.println(optimalMeasure());
     }
 
 }

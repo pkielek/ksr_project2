@@ -57,6 +57,7 @@ public class FirstFormSingleSummary extends LinguisticSummary {
             }
         });
         initializeWeights();
+        calcMeasures();
     }
 
     private void initializeWeights() {
@@ -71,6 +72,20 @@ public class FirstFormSingleSummary extends LinguisticSummary {
         weights.put("t9",0.01);
         weights.put("t10",0.01);
         weights.put("t11",0.01);
+    }
+
+    private void calcMeasures() {
+        t1();
+        t2();
+        t3();
+        t4();
+        t5();
+        t6();
+        t7();
+        t8();
+        t9();
+        t10();
+        t11();
     }
 
     public Double t1() {

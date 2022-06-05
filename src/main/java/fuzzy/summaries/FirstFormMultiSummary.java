@@ -63,16 +63,22 @@ public class FirstFormMultiSummary extends MultiLinguisticSummary {
         setFirstSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> subject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
         setSecondSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> secondSubject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
 
-        int firstSubjectCount = subject.count();
-        int secondSubjectCount = secondSubject.count();
+        calcTByQuantifier(quantifierLabel);
+    }
+
+    public void calcTByQuantifier(String quantifierLabel) {
+        setQuantifierLabel(quantifierLabel);
+        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
+        int firstSubjectCount = getSubject().count();
+        int secondSubjectCount = getSecondSubject().count();
 
         Double firstSubjectSummarizerSigmaCount = getFirstSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum);
+
         setT(LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().get(quantifierLabel).calcValue(
                 (firstSubjectSummarizerSigmaCount/firstSubjectCount)/(
                         (firstSubjectSummarizerSigmaCount/firstSubjectCount)+
                                 (getSecondSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum)/secondSubjectCount)
-                        )
+                )
         ));
     }
-
 }

@@ -26,6 +26,19 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
 
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
 
+        StringBuilder qualifierSummary = new StringBuilder();
+        qualifiersByVariableAndLabel.forEach((k,v)->{
+            if(!qualifierSummary.toString().equals((""))) {
+                qualifierSummary.append(" and ");
+            }
+            NumericVariable variable = NumericVariable.valueOf(k);
+            if(variable.getTitleBeforeLabel()) {
+                qualifierSummary.append(variable.getQualifierPrefix()).append(" ").append(variable.getSummarizerTitle()).append(" ").append(v);
+            } else {
+                qualifierSummary.append(variable.getQualifierPrefix()).append(" ").append(v).append(" ").append(variable.getSummarizerTitle());
+            }
+        });
+
         StringBuilder summarizerSummary = new StringBuilder();
         summarizersByVariableAndLabel.forEach((k, v) -> {
             if (!summarizerSummary.toString().equals((""))) {
@@ -42,7 +55,7 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
         setSummary(quantifierLabel +
                 " reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
                 + "compared to reservations" + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix() +
-                " " + summarizerSummary);
+                " " + qualifierSummary + " " + summarizerSummary);
 
         setQuantifierLabel(quantifierLabel);
 
@@ -74,8 +87,15 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
         setFirstSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> subject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
         setSecondSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> secondSubject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
 
-        int firstSubjectCount = subject.count();
-        int secondSubjectCount = secondSubject.count();
+
+        calcTByQuantifier(quantifierLabel);
+    }
+
+    public void calcTByQuantifier(String quantifierLabel) {
+        setQuantifierLabel(quantifierLabel);
+        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
+        int firstSubjectCount = getSubject().count();
+        int secondSubjectCount = getSecondSubject().count();
 
         Double firstSubjectSummarizerSigmaCount = getFirstSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum);
 
@@ -85,7 +105,6 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
                                 (getSecondSubjectSummaryResultSet().And(getQualifierResultSet()).getEntries().values().stream().reduce(0.0,Double::sum)/secondSubjectCount)
                 )
         ));
-
     }
 
 }
