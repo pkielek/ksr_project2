@@ -1,5 +1,5 @@
 totalOfSpecialRequests
 false,0,5,1
-without,1,-1,0,1
+none of,1,-1,0,1
 few,1,0,2,4
 many,2,2,4,5,6

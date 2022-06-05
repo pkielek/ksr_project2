@@ -1,6 +1,6 @@
 staysInWeekNights
 false,0,50,1
-without,1,-1,0,1
+none of,1,-1,0,1
 very short,1,0,1,6
 short,1,4,6,11
 long,1,8,15,20
