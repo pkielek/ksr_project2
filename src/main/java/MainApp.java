@@ -1,7 +1,9 @@
 import fuzzy.*;
 import fuzzy.summaries.FirstFormSingleSummary;
 import fuzzy.summaries.SecondFormSingleSummary;
+import model.NumericVariable;
 import model.StringVariable;
+import org.paukov.combinatorics3.Generator;
 
 import java.util.*;
 
@@ -11,7 +13,13 @@ public class MainApp {
     public static void main(String[] args) {
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         LBR.loadAllVariables();
-
+        HashMap<NumericVariable, LinguisticVariable> xd = LBR.getVariables();
+//        Generator.combination(LBR.getVariables().entrySet().)
+//                .simple(3)
+//                .stream()
+//                .forEach(System.out::println);
+//                        .simple(3)
+//                        .forEach(System.out::println));
         generate();
 //        new FourthFormMultiSummary(new CrispSet(StringVariable.countryCode,"United Kingdom"),new CrispSet(StringVariable.countryCode, "Portugal"),new TreeMap<>(Map.of("leadTime","short")));
 //        new SecondFormSingleSummary(null,true,"all",new TreeMap(Map.of("bookingChanges","little","adr","very low")),new TreeMap(Map.of("numberOfAdults","little")));
@@ -22,16 +30,16 @@ public class MainApp {
         ArrayList<FirstFormSingleSummary> firstFormList = new ArrayList<>();
         ArrayList<SecondFormSingleSummary> secondFormList = new ArrayList<>();
 
-        firstFormList.add(new FirstFormSingleSummary(null,true,"all",new TreeMap(Map.of("bookingChanges","none of"))));
+        firstFormList.add(new FirstFormSingleSummary(null,true,"all",new TreeMap(Map.of("daysInWaitingList","very short"))));
         firstFormList.add(new FirstFormSingleSummary(null,true,"hardly any",new TreeMap(Map.of("adr","very high"))));
         firstFormList.add(new FirstFormSingleSummary(null,true,"half of",new TreeMap(Map.of("leadTime","very short"))));
         firstFormList.add(new FirstFormSingleSummary(null,true,"some",new TreeMap(Map.of("arrivalDateDayOfMonth","for middle of the month"))));
         firstFormList.add(new FirstFormSingleSummary(null,true,"hardly any",new TreeMap(Map.of("staysInWeekendNights","long"))));
 
         firstFormList.add(new FirstFormSingleSummary(null,false,"less than 10000",new TreeMap(Map.of("leadTime","short"))));
-        firstFormList.add(new FirstFormSingleSummary(null,false,"less than 10000",new TreeMap(Map.of("staysInWeekNights","very short"))));
+        firstFormList.add(new FirstFormSingleSummary(null,false,"less than 10000",new TreeMap(Map.of("bookingChanges","little"))));
         firstFormList.add(new FirstFormSingleSummary(null,false,"around 50000",new TreeMap(Map.of("leadTime","short"))));
-        firstFormList.add(new FirstFormSingleSummary(null,false,"around 70000",new TreeMap(Map.of("arrivalDateDayOfMonth","for beginning of the month"))));
+        firstFormList.add(new FirstFormSingleSummary(null,false,"around 30000",new TreeMap(Map.of("arrivalDateDayOfMonth","for beginning of the month"))));
         firstFormList.add(new FirstFormSingleSummary(null,false,"more than 100000",new TreeMap(Map.of("requiredCarParkingSpaces","none of"))));
 
         firstFormList.add(new FirstFormSingleSummary(new CrispSet(StringVariable.countryCode, "Portugal"),true,"hardly any",new TreeMap(Map.of("leadTime","very short"))));
@@ -107,7 +115,7 @@ public class MainApp {
 
         stringBuilder.append("\\subsection{Podsumowania lingwistyczne jednopodmiotwe w drugiej formie}\n");
         for(int i =0; i<secondFormList.size(); i++){
-            stringBuilder.append((i+1)+". " + secondFormList.get(i).getSummary() +"[" +Math.round(secondFormList.get(i).t1()*100.0)/100.0+"]\\\\\n");
+            stringBuilder.append((i+1)+". " + secondFormList.get(i).getSummary() +"[" +Math.round(secondFormList.get(i).optimalMeasure()*100.0)/100.0+"]\\\\\n");
         }
 
         stringBuilder.append("\\begin{table}[H]\n");
