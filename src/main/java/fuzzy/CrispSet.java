@@ -12,7 +12,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CrispSet implements SummarySet<CrispSet> {
+public class CrispSet implements SetOperations<CrispSet> {
     @Getter
     private final StringVariable variable;
     @Getter

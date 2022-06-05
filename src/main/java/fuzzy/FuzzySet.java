@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FuzzySet implements SummarySet<FuzzySet> {
+public class FuzzySet implements SetOperations<FuzzySet> {
     @Getter
     private TreeMap<Integer,Double> entries;
     private MembershipFunction membershipFunction;

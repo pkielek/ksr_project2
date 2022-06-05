@@ -55,7 +55,7 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
 
         setSummary(quantifierLabel +
                 " reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
-                + "compared to reservations" + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix() +
+                + "compared to reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix() +
                 " " + qualifierSummary + " " + summarizerSummary);
 
         setQuantifierLabel(quantifierLabel);

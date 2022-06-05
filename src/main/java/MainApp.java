@@ -1,10 +1,12 @@
 import fuzzy.*;
 import fuzzy.summaries.*;
+import model.HotelBookingRepository;
 import model.NumericVariable;
 import model.StringVariable;
 import org.paukov.combinatorics3.Generator;
 
 import java.io.*;
+import java.net.http.HttpHeaders;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,8 +17,8 @@ public class MainApp {
     public static void main(String[] args) throws IOException {
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         LBR.loadAllVariables();
-//        saveCsvMultiSummaryResults(generateThirdFormMultiSummaryList(),"ThirdFormMultiSummaryList");
-        saveCsvMultiSummaryFourthFormResults(generateFourthFormMultiSummaryList(),"FourthFormMultiSummaryList");
+        saveCsvMultiSummaryResults(generateThirdFormMultiSummaryList(),"ThirdFormMultiSummaryList");
+//        saveCsvMultiSummaryFourthFormResults(generateFourthFormMultiSummaryList(),"FourthFormMultiSummaryList");
     }
 
     public static HashSet<NumericVariable> getSelectNumericVariables() {

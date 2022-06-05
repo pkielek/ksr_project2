@@ -1,6 +1,6 @@
 package fuzzy;
 
-public interface SummarySet<T> {
+public interface SetOperations<T> {
     T And(T set);
     T Or(T set);
     void Not();
