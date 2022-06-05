@@ -252,7 +252,13 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     public Double optimalMeasure() {
         double weightsFactor = weights.isEmpty()?1.0/11.0:1/weights.values().stream().reduce(0.0,Double::sum);
         AtomicReference<Double> sum = new AtomicReference<>(0.0);
-        getQualityMeasures().forEach((k,v) -> sum.updateAndGet(v1 -> v1 + (v * weights.getOrDefault(k,1.0)) * weightsFactor));
+        getQualityMeasures().forEach((k,v) -> sum.updateAndGet(v1 -> v1 + (k.equals("Optimum")?0.0:(v * weights.getOrDefault(k,1.0)) * weightsFactor)));
         return sum.get();
+    }
+
+    @Override
+    public SummaryResult retrieveResults() {
+        getQualityMeasures().put("Optimum",optimalMeasure());
+        return new SummaryResult(getSummary(),getQualityMeasures());
     }
 }

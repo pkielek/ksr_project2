@@ -6,6 +6,7 @@ import fuzzy.LinguisticVariableRepository;
 import fuzzy.summaries.MultiLinguisticSummary;
 import model.NumericVariable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class ThirdFormMultiSummary extends MultiLinguisticSummary {
         setSecondSubject(secondSubject);
         setRelativeQuantifier(true);
         setQualifiersByVariableAndLabel(null);
-        setQualityMeasures(null);
+        setQualityMeasures(new HashMap<>());
 
         if (subject == null || secondSubject == null) {
             throw new IllegalArgumentException("Cannot calculate duo subject summary without subjects");
@@ -105,5 +106,11 @@ public class ThirdFormMultiSummary extends MultiLinguisticSummary {
                                 (getSecondSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum)/secondSubjectCount)
                 )
         ));
+    }
+
+    @Override
+    public SummaryResult retrieveResults() {
+        getQualityMeasures().put("T",optimalMeasure());
+        return new SummaryResult(getSummary(),getQualityMeasures());
     }
 }

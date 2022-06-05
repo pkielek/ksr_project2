@@ -76,4 +76,10 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
         setT(1.0-inclusionMembershipFunctionValues.stream().reduce(0.0,Double::sum)/ inclusionMembershipFunctionValues.size());
     }
 
+
+    @Override
+    public SummaryResult retrieveResults() {
+        getQualityMeasures().put("T",optimalMeasure());
+        return new SummaryResult(getSummary(),getQualityMeasures());
+    }
 }

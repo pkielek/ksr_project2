@@ -38,4 +38,5 @@ public abstract class LinguisticSummary {
     @Setter
     private CrispSet subject;
     public abstract Double optimalMeasure();
+    public abstract SummaryResult retrieveResults();
 }
