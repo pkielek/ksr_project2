@@ -82,7 +82,7 @@ public class SecondFormSingleSummary extends LinguisticSummary {
             setQualifierResultSet(new FuzzySet(subject, LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getName(),LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getLabels().get(qualifiersByVariableAndLabel.firstEntry().getValue())));
         }
         qualifiersByVariableAndLabel.forEach((k,v) -> {
-            if(!k.equals(firstKey)) {
+            if(!k.equals(firstQualifierKey)) {
                 setQualifierResultSet(getQualifierResultSet().And((subject==null
                         ?new FuzzySet(LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v))
                         :new FuzzySet(subject,LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v)))));

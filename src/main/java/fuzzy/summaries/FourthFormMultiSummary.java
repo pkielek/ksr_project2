@@ -3,15 +3,23 @@ package fuzzy.summaries;
 import fuzzy.CrispSet;
 import fuzzy.FuzzySet;
 import fuzzy.LinguisticVariableRepository;
+import lombok.Getter;
+import lombok.Setter;
 import model.NumericVariable;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class FourthFormMultiSummary extends MultiLinguisticSummary {
-
+    @Getter
+    @Setter
+    private Double symmetricSummaryT;
+    @Getter
+    @Setter
+    private String symmetricSummary;
     public FourthFormMultiSummary(CrispSet subject, CrispSet secondSubject, TreeMap<String,String> summarizersByVariableAndLabel) {
 
         setSummarizersByVariableAndLabel(summarizersByVariableAndLabel);
@@ -19,7 +27,7 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
         setSecondSubject(secondSubject);
         setRelativeQuantifier(true);
         setQualifiersByVariableAndLabel(null);
-        setQualityMeasures(null);
+        setQualityMeasures(new HashMap<>());
         setQuantifierLabel(null);
 
 
@@ -45,6 +53,10 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
                 "More reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
                         + " than reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
                         + summarizerSummary);
+        setSymmetricSummary(
+                "More reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
+                        + " than reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
+                        + summarizerSummary);
 
         if (summarizersByVariableAndLabel.isEmpty()) {
             throw new IllegalArgumentException("No summarizers in summary");
@@ -63,23 +75,37 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
         setFirstSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> subject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
         setSecondSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> secondSubject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
 
-        ArrayList<Double> inclusionMembershipFunctionValues = new ArrayList<>();
+        AtomicReference<Double> inclusionMembershipFunctionValuesSum = new AtomicReference<>(0.0);
+        AtomicReference<Integer> inclusionMembershipFunctionValuesCount = new AtomicReference<>(0);
         getSecondSubjectSummaryResultSet().getEntries().forEach(
-                (k1,v1)-> {
-                    getFirstSubjectSummaryResultSet().getEntries().forEach(
-                            (k2,v2) -> {
-                                inclusionMembershipFunctionValues.add(1-v1+v1*v2);
-                            }
-                    );
-                }
+                (k1,v1)-> getFirstSubjectSummaryResultSet().getEntries().forEach(
+                        (k2,v2) -> {
+                            inclusionMembershipFunctionValuesSum.updateAndGet(v -> v + 1 - v1 + v1 * v2);
+                            inclusionMembershipFunctionValuesCount.getAndSet(inclusionMembershipFunctionValuesCount.get() + 1);
+                        }
+                )
         );
-        setT(1.0-inclusionMembershipFunctionValues.stream().reduce(0.0,Double::sum)/ inclusionMembershipFunctionValues.size());
+        setT(1.0-inclusionMembershipFunctionValuesSum.get()/ inclusionMembershipFunctionValuesCount.get());
+        inclusionMembershipFunctionValuesCount.updateAndGet(v->0);
+        inclusionMembershipFunctionValuesSum.updateAndGet(v->0.0);
+
+        getFirstSubjectSummaryResultSet().getEntries().forEach(
+                (k1,v1)-> getSecondSubjectSummaryResultSet().getEntries().forEach(
+                        (k2,v2) -> {
+                            inclusionMembershipFunctionValuesSum.updateAndGet(v -> v + 1 - v1 + v1 * v2);
+                            inclusionMembershipFunctionValuesCount.getAndSet(inclusionMembershipFunctionValuesCount.get() + 1);
+                        }
+                )
+        );
+        setSymmetricSummaryT(1.0-inclusionMembershipFunctionValuesSum.get()/ inclusionMembershipFunctionValuesCount.get());
     }
 
 
     @Override
     public SummaryResult retrieveResults() {
         getQualityMeasures().put("T",optimalMeasure());
-        return new SummaryResult(getSummary(),getQualityMeasures());
+        getQualityMeasures().put("symmetricT",getSymmetricSummaryT());
+
+        return new SummaryResult(getSummary()+","+getSymmetricSummary(),getQualityMeasures());
     }
 }

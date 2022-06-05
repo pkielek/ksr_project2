@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class FirstFormSingleSummary extends LinguisticSummary {
     private HashMap<String, Double> weights = new HashMap<>();
     public FirstFormSingleSummary(CrispSet subject, Boolean relativeQuantifier, String quantifierLabel, TreeMap<String,String> summarizersByVariableAndLabel) {
-
         setSummarizersByVariableAndLabel(summarizersByVariableAndLabel);
         setSubject(subject);
         setQualifierResultSet(null);
@@ -50,7 +49,7 @@ public class FirstFormSingleSummary extends LinguisticSummary {
             setSummaryResultSet(new FuzzySet(subject, LBR.getVariables().get(NumericVariable.valueOf(firstKey)).getName(),LBR.getVariables().get(NumericVariable.valueOf(firstKey)).getLabels().get(summarizersByVariableAndLabel.firstEntry().getValue())));
         }
         summarizersByVariableAndLabel.forEach((k,v) -> {
-            if(k.equals(firstKey)) {
+            if(!k.equals(firstKey)) {
                 setSummaryResultSet(getSummaryResultSet().And((subject==null
                         ?new FuzzySet(LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v))
                         :new FuzzySet(subject,LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v)))));

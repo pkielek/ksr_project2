@@ -81,7 +81,7 @@ public class ThirdFormMultiSummary extends MultiLinguisticSummary {
         String firstQualifierKey = qualifiersByVariableAndLabel.firstKey();
         setQualifierResultSet(new FuzzySet(subject, LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getName(),LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getLabels().get(qualifiersByVariableAndLabel.firstEntry().getValue())));
         qualifiersByVariableAndLabel.forEach((k,v) -> {
-            if(!k.equals(firstKey)) {
+            if(!k.equals(firstQualifierKey)) {
                 setQualifierResultSet(getQualifierResultSet().And(new FuzzySet(subject,LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v))));
             }
         });
@@ -98,11 +98,12 @@ public class ThirdFormMultiSummary extends MultiLinguisticSummary {
         int firstSubjectCount = getSubject().count();
         int secondSubjectCount = getSecondSubject().count();
 
-        Double firstSubjectSummarizerSigmaCount = getFirstSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum);
+        Double firstSubjectSummarizerSigmaCount = getFirstSubjectSummaryResultSet().And(getQualifierResultSet()).getEntries().values().stream().reduce(0.0,Double::sum);
+
 
         setT(LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().get(quantifierLabel).calcValue(
                 (firstSubjectSummarizerSigmaCount/firstSubjectCount)/(
-                        (getFirstSubjectSummaryResultSet().And(getQualifierResultSet()).getEntries().values().stream().reduce(0.0,Double::sum)/firstSubjectCount)+
+                        (firstSubjectSummarizerSigmaCount/firstSubjectCount)+
                                 (getSecondSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum)/secondSubjectCount)
                 )
         ));

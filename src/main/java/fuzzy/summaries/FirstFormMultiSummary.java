@@ -74,7 +74,6 @@ public class FirstFormMultiSummary extends MultiLinguisticSummary {
         int secondSubjectCount = getSecondSubject().count();
 
         Double firstSubjectSummarizerSigmaCount = getFirstSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum);
-
         setT(LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().get(quantifierLabel).calcValue(
                 (firstSubjectSummarizerSigmaCount/firstSubjectCount)/(
                         (firstSubjectSummarizerSigmaCount/firstSubjectCount)+

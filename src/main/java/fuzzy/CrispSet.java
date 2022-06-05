@@ -4,6 +4,7 @@ import com.neovisionaries.i18n.CountryCode;
 import lombok.Getter;
 import model.HotelBookingRepository;
 import model.StringVariable;
+import org.apache.commons.text.WordUtils;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,9 +22,9 @@ public class CrispSet implements SummarySet<CrispSet> {
 
     public CrispSet(StringVariable variable, String filterValue) {
         this.variable = variable;
-        this.filterValue = filterValue;
+        this.filterValue = WordUtils.capitalizeFully(filterValue.replace('_',' '));
         this.entries = new TreeMap<>();
-        if (CountryCode.findByName(filterValue).isEmpty()) {
+        if (variable==StringVariable.countryCode && CountryCode.findByName(filterValue).isEmpty()) {
             throw new IllegalArgumentException("No such country found");
         }
         HotelBookingRepository HBR = HotelBookingRepository.getInstance();
