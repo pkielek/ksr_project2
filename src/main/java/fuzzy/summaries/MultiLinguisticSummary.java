@@ -1,5 +1,7 @@
-package fuzzy;
+package fuzzy.summaries;
 
+import fuzzy.CrispSet;
+import fuzzy.FuzzySet;
 import lombok.Getter;
 import lombok.Setter;
 

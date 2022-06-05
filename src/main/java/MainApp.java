@@ -1,12 +1,9 @@
 import fuzzy.*;
-import model.HotelBookingRepository;
-import model.NumericVariable;
+import fuzzy.summaries.FirstFormSingleSummary;
+import fuzzy.summaries.SecondFormSingleSummary;
 import model.StringVariable;
-import org.paukov.combinatorics3.Generator;
 
 import java.util.*;
-
-import static model.DatabaseInitialize.databaseInitialize;
 
 
 public class MainApp {
@@ -76,7 +73,7 @@ public class MainApp {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\\subsection{Podsumowania lingwistyczne jednopodmiotwe w pierwszej formie}\n");
         for(int i =0; i<firstFormList.size(); i++){
-            stringBuilder.append((i+1)+". " + firstFormList.get(i).getSummary() +"[" +Math.round(firstFormList.get(i).t1()*100.0)/100.0+"]\\\\\n");
+            stringBuilder.append((i+1)+". " + firstFormList.get(i).getSummary() +"[" +Math.round(firstFormList.get(i).optimalMeasure()*100.0)/100.0+"]\\\\\n");
         }
 
         stringBuilder.append("\\begin{table}[H]\n");

@@ -1,5 +1,9 @@
-package fuzzy;
+package fuzzy.summaries;
 
+import fuzzy.CrispSet;
+import fuzzy.FuzzySet;
+import fuzzy.LinguisticVariableRepository;
+import fuzzy.summaries.MultiLinguisticSummary;
 import model.NumericVariable;
 
 import java.util.Map;

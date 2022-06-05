@@ -1,14 +1,18 @@
-package fuzzy;
+package fuzzy.summaries;
 
+import fuzzy.CrispSet;
+import fuzzy.FuzzySet;
+import fuzzy.LinguisticVariableRepository;
 import model.NumericVariable;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class SecondFormMultiSummary extends MultiLinguisticSummary {
+public class FourthFormMultiSummary extends MultiLinguisticSummary {
 
-    public SecondFormMultiSummary(CrispSet subject, CrispSet secondSubject, String quantifierLabel, TreeMap<String,String> summarizersByVariableAndLabel, TreeMap<String,String> qualifiersByVariableAndLabel) {
+    public FourthFormMultiSummary(CrispSet subject, CrispSet secondSubject, TreeMap<String,String> summarizersByVariableAndLabel) {
 
         setSummarizersByVariableAndLabel(summarizersByVariableAndLabel);
         setSubject(subject);
@@ -16,6 +20,8 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
         setRelativeQuantifier(true);
         setQualifiersByVariableAndLabel(null);
         setQualityMeasures(null);
+        setQuantifierLabel(null);
+
 
         if (subject == null || secondSubject == null) {
             throw new IllegalArgumentException("Cannot calculate duo subject summary without subjects");
@@ -36,12 +42,6 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
             }
         });
 
-        setSummary(quantifierLabel +
-                " reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
-                + "compared to reservations" + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix() +
-                " " + summarizerSummary);
-
-        setQuantifierLabel(quantifierLabel);
 
         if (summarizersByVariableAndLabel.isEmpty()) {
             throw new IllegalArgumentException("No summarizers in summary");
@@ -57,32 +57,21 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
             }
         });
 
-        if(qualifiersByVariableAndLabel.isEmpty()) {
-            throw new IllegalArgumentException("No qualifiers in summary");
-        }
-        String firstQualifierKey = qualifiersByVariableAndLabel.firstKey();
-        setQualifierResultSet(new FuzzySet(secondSubject, LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getName(),LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getLabels().get(qualifiersByVariableAndLabel.firstEntry().getValue())));
-        qualifiersByVariableAndLabel.forEach((k,v) -> {
-            if(!k.equals(firstKey)) {
-                setQualifierResultSet(getQualifierResultSet().And(new FuzzySet(secondSubject,LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v))));
-            }
-        });
-
         setFirstSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> subject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
         setSecondSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> secondSubject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
 
-        int firstSubjectCount = subject.count();
-        int secondSubjectCount = secondSubject.count();
-
-        Double firstSubjectSummarizerSigmaCount = getFirstSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum);
-
-        setT(LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().get(quantifierLabel).calcValue(
-                (firstSubjectSummarizerSigmaCount/firstSubjectCount)/(
-                        (firstSubjectSummarizerSigmaCount/firstSubjectCount)+
-                                (getSecondSubjectSummaryResultSet().And(getQualifierResultSet()).getEntries().values().stream().reduce(0.0,Double::sum)/secondSubjectCount)
-                )
-        ));
-
+        ArrayList<Double> inclusionMembershipFunctionValues = new ArrayList<>();
+        getSecondSubjectSummaryResultSet().getEntries().forEach(
+                (k1,v1)-> {
+                    getFirstSubjectSummaryResultSet().getEntries().forEach(
+                            (k2,v2) -> {
+                                inclusionMembershipFunctionValues.add(1-v1+v1*v2);
+                            }
+                    );
+                }
+        );
+        setT(1.0-inclusionMembershipFunctionValues.stream().reduce(0.0,Double::sum)/ inclusionMembershipFunctionValues.size());
+        System.out.println(optimalMeasure());
     }
 
 }

@@ -1,5 +1,8 @@
-package fuzzy;
+package fuzzy.summaries;
 
+import fuzzy.CrispSet;
+import fuzzy.FuzzySet;
+import fuzzy.LinguisticVariableRepository;
 import model.HotelBookingRepository;
 import model.NumericVariable;
 
@@ -87,19 +90,6 @@ public class SecondFormSingleSummary extends LinguisticSummary {
         });
 
 
-//        t1();
-//        t2();
-//        t3();
-//        t4();
-//        t5();
-//        t6();
-//        t7();
-//        t8();
-//        t9();
-//        t10();
-//        t11();
-//        System.out.println(getQualityMeasures());
-//        System.out.println(optimalMeasure());
     }
 
     private void initializeWeights() {
@@ -117,6 +107,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     }
 
     public Double t1() {
+        if(getQualityMeasures().get("t1")!=null)
+            return getQualityMeasures().get("t1");
         FuzzySet summaryAndQualifierResultSet = getSummaryResultSet().And(getQualifierResultSet());
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         getQualityMeasures().put("t1",LBR.getVariables().get(NumericVariable.relativeQuantifier)
@@ -128,6 +120,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
 
 
     public Double t2() {
+        if(getQualityMeasures().get("t2")!=null)
+            return getQualityMeasures().get("t2");
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         getQualityMeasures().put("t2",1.0-Math.pow(getSummarizersByVariableAndLabel().entrySet().stream().reduce(1.0,(product,v) -> product*
                         LBR.getVariables().get(NumericVariable.valueOf(v.getKey())).getLabels().get(v.getValue()).calcCardinality()/
@@ -137,11 +131,15 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     }
 
     public Double t3() {
+        if(getQualityMeasures().get("t3")!=null)
+            return getQualityMeasures().get("t3");
         getQualityMeasures().put("t3",Double.valueOf(getSummaryResultSet().support().count())/ (double) getSummaryResultSet().getEntries().size());
         return getQualityMeasures().get("t3");
     }
 
     public Double t4() {
+        if(getQualityMeasures().get("t4")!=null)
+            return getQualityMeasures().get("t4");
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         HotelBookingRepository HBR = HotelBookingRepository.getInstance();
         AtomicReference<Double> product = new AtomicReference<>(1.0);
@@ -168,11 +166,15 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     }
 
     public Double t5() {
+        if(getQualityMeasures().get("t5")!=null)
+            return getQualityMeasures().get("t5");
         getQualityMeasures().put("t5",2*Math.pow(0.5,getSummarizersByVariableAndLabel().size()));
         return getQualityMeasures().get("t5");
     }
 
     public Double t6() {
+        if(getQualityMeasures().get("t6")!=null)
+            return getQualityMeasures().get("t6");
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         getQualityMeasures().put("t6",1.0-LBR.getVariables().get(NumericVariable.relativeQuantifier)
                 .getLabels().get(getQuantifierLabel()).calcCardinality()/LBR.getVariables().get(
@@ -181,6 +183,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     }
 
     public Double t7() {
+        if(getQualityMeasures().get("t7")!=null)
+            return getQualityMeasures().get("t7");
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         getQualityMeasures().put("t7",1.0-LBR.getVariables().get(NumericVariable.relativeQuantifier)
                 .getLabels().get(getQuantifierLabel()).calcArea()/LBR.getVariables().get(
@@ -189,6 +193,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     }
 
     public Double t8() {
+        if(getQualityMeasures().get("t8")!=null)
+            return getQualityMeasures().get("t8");
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         getQualityMeasures().put("t8",1.0-Math.pow(getSummarizersByVariableAndLabel().entrySet().stream().reduce(1.0,(product,v) -> product*
                         LBR.getVariables().get(NumericVariable.valueOf(v.getKey())).getLabels().get(v.getValue()).calcArea()/
@@ -198,6 +204,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     }
 
     public Double t9() {
+        if(getQualityMeasures().get("t9")!=null)
+            return getQualityMeasures().get("t9");
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         getQualityMeasures().put("t9",1.0-Math.pow(getQualifiersByVariableAndLabel().entrySet().stream().reduce(1.0,(product,v) -> product*
                         LBR.getVariables().get(NumericVariable.valueOf(v.getKey())).getLabels().get(v.getValue()).calcCardinality()/
@@ -207,6 +215,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     }
 
     public Double t10() {
+        if(getQualityMeasures().get("t10")!=null)
+            return getQualityMeasures().get("t10");
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         getQualityMeasures().put("t10",1.0-Math.pow(getQualifiersByVariableAndLabel().entrySet().stream().reduce(1.0,(product,v) -> product*
                         LBR.getVariables().get(NumericVariable.valueOf(v.getKey())).getLabels().get(v.getValue()).calcArea()/
@@ -216,6 +226,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     }
 
     public Double t11() {
+        if(getQualityMeasures().get("t11")!=null)
+            return getQualityMeasures().get("t11");
         getQualityMeasures().put("t11",2*Math.pow(0.5,getQualifiersByVariableAndLabel().size()));
         return getQualityMeasures().get("t11");
     }
