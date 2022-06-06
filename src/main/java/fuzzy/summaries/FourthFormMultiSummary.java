@@ -76,24 +76,25 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
         setSecondSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> secondSubject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
 
         AtomicReference<Double> inclusionMembershipFunctionValuesSum = new AtomicReference<>(0.0);
-        AtomicReference<Integer> inclusionMembershipFunctionValuesCount = new AtomicReference<>(0);
+        AtomicReference<Long> inclusionMembershipFunctionValuesCount = new AtomicReference<>(0L);
         getSecondSubjectSummaryResultSet().getEntries().forEach(
                 (k1,v1)-> getFirstSubjectSummaryResultSet().getEntries().forEach(
                         (k2,v2) -> {
                             inclusionMembershipFunctionValuesSum.updateAndGet(v -> v + 1 - v1 + v1 * v2);
-                            inclusionMembershipFunctionValuesCount.getAndSet(inclusionMembershipFunctionValuesCount.get() + 1);
+                            inclusionMembershipFunctionValuesCount.updateAndGet(v -> v + 1);
                         }
                 )
         );
         setT(1.0-inclusionMembershipFunctionValuesSum.get()/ inclusionMembershipFunctionValuesCount.get());
-        inclusionMembershipFunctionValuesCount.updateAndGet(v->0);
+        System.out.println(getT());
+        inclusionMembershipFunctionValuesCount.updateAndGet(v->0L);
         inclusionMembershipFunctionValuesSum.updateAndGet(v->0.0);
 
         getFirstSubjectSummaryResultSet().getEntries().forEach(
                 (k1,v1)-> getSecondSubjectSummaryResultSet().getEntries().forEach(
                         (k2,v2) -> {
                             inclusionMembershipFunctionValuesSum.updateAndGet(v -> v + 1 - v1 + v1 * v2);
-                            inclusionMembershipFunctionValuesCount.getAndSet(inclusionMembershipFunctionValuesCount.get() + 1);
+                            inclusionMembershipFunctionValuesCount.updateAndGet(v -> v + 1);
                         }
                 )
         );

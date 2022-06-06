@@ -29,6 +29,7 @@ public class SummaryResult {
             builder.append(",");
             builder.append(measures.get("T").isNaN()?Double.NaN:(measures.get("T")<0.005&&measures.get("T")!=0.0?"~0.0":Math.round(measures.get("T")*100.0)/100.0));
             if(measures.containsKey("symmetricT")) {
+                builder.append(",");
                 builder.append(measures.get("symmetricT").isNaN()?Double.NaN:(measures.get("symmetricT")<0.005&&measures.get("symmetricT")!=0.0?"~0.0":Math.round(measures.get("symmetricT")*100.0)/100.0));
             }
         }

@@ -17,8 +17,8 @@ public class MainApp {
     public static void main(String[] args) throws IOException {
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         LBR.loadAllVariables();
-        saveCsvMultiSummaryResults(generateThirdFormMultiSummaryList(),"ThirdFormMultiSummaryList");
-//        saveCsvMultiSummaryFourthFormResults(generateFourthFormMultiSummaryList(),"FourthFormMultiSummaryList");
+//        saveCsvMultiSummaryResults(generateThirdFormMultiSummaryList(),"ThirdFormMultiSummaryList");
+        saveCsvMultiSummaryFourthFormResults(generateFourthFormMultiSummaryList(),"FourthFormMultiSummaryList");
     }
 
     public static HashSet<NumericVariable> getSelectNumericVariables() {
@@ -45,12 +45,12 @@ public class MainApp {
 
     public static HashMap<StringVariable,HashSet<String>> getCompoundSelectStringVariables() {
         HashMap<StringVariable,HashSet<String>> subjects = new HashMap<>();
-        HashSet<String> countries = new HashSet<>();
-        countries.add("Portugal");
-        countries.add("Germany");
-        countries.add("United Kingdom");
-        countries.add("Spain");
-        subjects.put(StringVariable.countryCode,countries);
+//        HashSet<String> countries = new HashSet<>();
+//        countries.add("Portugal");
+//        countries.add("Germany");
+//        countries.add("United Kingdom");
+//        countries.add("Spain");
+//        subjects.put(StringVariable.countryCode,countries);
         HashSet<String> hotels = new HashSet<>();
         hotels.add("RESORT_HOTEL");
         hotels.add("CITY_HOTEL");
