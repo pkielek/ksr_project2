@@ -14,11 +14,95 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainApp {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
         LBR.loadAllVariables();
-        saveCsvMultiSummaryResults(generateThirdFormMultiSummaryList(),"ThirdFormMultiSummaryList");
-//        saveCsvMultiSummaryFourthFormResults(generateFourthFormMultiSummaryList(),"FourthFormMultiSummaryList");
+        generate_v2(new FirstFormSingleSummary(null,true,"some",new TreeMap(Map.of("leadTime","very short"))));
+        generate_v2(new FirstFormSingleSummary(null,true,"all",new TreeMap(Map.of("numberOfAdults","little"))));
+        generate_v2(new FirstFormSingleSummary(null,true,"some",new TreeMap(Map.of("requiredCarParkingSpaces","little"))));
+        generate_v2(new FirstFormSingleSummary(null,true,"hardly any",new TreeMap(Map.of("daysInWaitingList","long"))));
+        generate_v2(new FirstFormSingleSummary(null,true,"a lot of",new TreeMap(Map.of("numberOfChildren","none of"))));
+
+        generate_v2(new FirstFormSingleSummary(null,false,"less than 10000",new TreeMap(Map.of("bookingChanges","little"))));
+        generate_v2(new FirstFormSingleSummary(null,false,"more than 100000",new TreeMap(Map.of("numberOfChildren","none of"))));
+        generate_v2(new FirstFormSingleSummary(null,false,"around 50000",new TreeMap(Map.of("adr","very high"))));
+        generate_v2(new FirstFormSingleSummary(null,false,"around 70000",new TreeMap(Map.of("staysInWeekNights","very short"))));
+        generate_v2(new FirstFormSingleSummary(null,false,"around 30000",new TreeMap(Map.of("leadTime","very short"))));
+
+        generate_v2(new FirstFormSingleSummary(new CrispSet(StringVariable.countryCode, "Germany"),true,"a lot of",new TreeMap(Map.of("staysInWeekNights","short"))));
+        generate_v2(new FirstFormSingleSummary(new CrispSet(StringVariable.countryCode, "United Kingdom"),true,"all",new TreeMap(Map.of("daysInWaitingList","very short"))));
+        generate_v2(new FirstFormSingleSummary(new CrispSet(StringVariable.countryCode, "Spain"),true,"some",new TreeMap(Map.of("bookingChanges","little"))));
+        generate_v2(new FirstFormSingleSummary(new CrispSet(StringVariable.hotel, "CITY_HOTEL"),true,"hardly any",new TreeMap(Map.of("staysInWeekNights","none of"))));
+        generate_v2(new FirstFormSingleSummary(new CrispSet(StringVariable.hotel, "RESORT_HOTEL"),true,"a lot of",new TreeMap(Map.of("requiredCarParkingSpaces","none of"))));
+
+        generate_v2(new FirstFormSingleSummary(null,true,"hardly any",new TreeMap(Map.of("daysInWaitingList","long","leadTime","very long"))));
+        generate_v2(new FirstFormSingleSummary(null,true,"half of",new TreeMap(Map.of("leadTime","very short","requiredCarParkingSpaces","few"))));
+        generate_v2(new FirstFormSingleSummary(null,true,"a lot of",new TreeMap(Map.of("numberOfAdults","little","staysInWeekNights","very short"))));
+        generate_v2(new FirstFormSingleSummary(null,true,"some",new TreeMap(Map.of("leadTime","short","numberOfChildren","none of"))));
+        generate_v2(new FirstFormSingleSummary(null,true,"half of",new TreeMap(Map.of("numberOfChildren","none of","staysInWeekendNights","none of"))));
+
+        generate_v2(new SecondFormSingleSummary(null,"hardly any",new TreeMap(Map.of("numberOfAdults","little")),new TreeMap(Map.of("staysInWeekNights","long"))));
+        generate_v2(new SecondFormSingleSummary(null,"a lot of",new TreeMap(Map.of("numberOfAdults","little")),new TreeMap(Map.of("totalOfSpecialRequests","few"))));
+        generate_v2(new SecondFormSingleSummary(null,"some",new TreeMap(Map.of("totalOfSpecialRequests","few")),new TreeMap(Map.of("bookingChanges","little"))));
+        generate_v2(new SecondFormSingleSummary(null,"hardly any",new TreeMap(Map.of("leadTime","very long")),new TreeMap(Map.of("requiredCarParkingSpaces","little"))));
+        generate_v2(new SecondFormSingleSummary(null,"half of",new TreeMap(Map.of("totalOfSpecialRequests","none of")),new TreeMap(Map.of("staysInWeekNights","none of"))));
+        generate_v2(new SecondFormSingleSummary(null,"half of",new TreeMap(Map.of("leadTime","long")),new TreeMap(Map.of("totalOfSpecialRequests","few"))));
+        generate_v2(new SecondFormSingleSummary(null,"all",new TreeMap(Map.of("leadTime","very long")),new TreeMap(Map.of("numberOfAdults","a lot of"))));
+
+        generate_v2(new SecondFormSingleSummary(new CrispSet(StringVariable.countryCode, "Germany"),"hardly any",new TreeMap(Map.of("numberOfAdults","none of")),new TreeMap(Map.of("requiredCarParkingSpaces","none of"))));
+        generate_v2(new SecondFormSingleSummary(new CrispSet(StringVariable.countryCode, "United Kingdom"),"hardly any",new TreeMap(Map.of("requiredCarParkingSpaces","little")),new TreeMap(Map.of("totalOfSpecialRequests","none of"))));
+        generate_v2(new SecondFormSingleSummary(new CrispSet(StringVariable.countryCode, "Portugal"),"some",new TreeMap(Map.of("leadTime","very long")),new TreeMap(Map.of("numberOfAdults","little"))));
+        generate_v2(new SecondFormSingleSummary(new CrispSet(StringVariable.hotel, "CITY_HOTEL"),"some",new TreeMap(Map.of("leadTime","very long")),new TreeMap(Map.of("staysInWeekNights","long"))));
+        generate_v2(new SecondFormSingleSummary(new CrispSet(StringVariable.countryCode, "Germany"),"a lot of",new TreeMap(Map.of("totalOfSpecialRequests","none of")),new TreeMap(Map.of("staysInWeekNights","short"))));
+        generate_v2(new SecondFormSingleSummary(new CrispSet(StringVariable.countryCode, "Spain"),"a lot of",new TreeMap(Map.of("totalOfSpecialRequests","none of")),new TreeMap(Map.of("staysInWeekNights","none of"))));
+        generate_v2(new SecondFormSingleSummary(new CrispSet(StringVariable.hotel, "RESORT_HOTEL"),"all",new TreeMap(Map.of("totalOfSpecialRequests","many")),new TreeMap(Map.of("staysInWeekNights","none of"))));
+
+
+        generate_v2(new SecondFormSingleSummary(null,"a lot of",new TreeMap(Map.of("totalOfSpecialRequests","few")),new TreeMap(Map.of("requiredCarParkingSpaces","few","staysInWeekNights","short"))));
+        generate_v2(new SecondFormSingleSummary(null,"some",new TreeMap(Map.of("requiredCarParkingSpaces","little")),new TreeMap(Map.of("numberOfAdults","little","staysInWeekNights","long"))));
+        generate_v2(new SecondFormSingleSummary(null,"some",new TreeMap(Map.of("leadTime","long")),new TreeMap(Map.of("requiredCarParkingSpaces","little","totalOfSpecialRequests","many"))));
+        generate_v2(new SecondFormSingleSummary(null,"all",new TreeMap(Map.of("staysInWeekNights","very short")),new TreeMap(Map.of("leadTime","long","staysInWeekNights","very short"))));
+        generate_v2(new SecondFormSingleSummary(null,"hardly any",new TreeMap(Map.of("staysInWeekNights","long")),new TreeMap(Map.of("bookingChanges","many","leadTime","short"))));
+        generate_v2(new SecondFormSingleSummary(null,"half of",new TreeMap(Map.of("totalOfSpecialRequests","none of")),new TreeMap(Map.of("bookingChanges","few","leadTime","long"))));
+        generate_v2(new SecondFormSingleSummary(null,"all",new TreeMap(Map.of("leadTime","very long")),new TreeMap(Map.of("bookingChanges","none of","numberOfAdults","many"))));
+
+
+//        generate();
+//        new FourthFormMultiSummary(new CrispSet(StringVariable.countryCode,"United Kingdom"),new CrispSet(StringVariable.countryCode, "Portugal"),new TreeMap<>(Map.of("leadTime","short")));
+//        new SecondFormSingleSummary(null,true,"all",new TreeMap(Map.of("bookingChanges","little","adr","very low")),new TreeMap(Map.of("numberOfAdults","little")));
+
+    }
+
+    private static void generate_v2(FirstFormSingleSummary xd) {
+        System.out.println("-----------------------------");
+        System.out.println(xd.t1());
+        System.out.println(xd.t2());
+        System.out.println(xd.t3());
+        System.out.println(xd.t4());
+        System.out.println(xd.t5());
+        System.out.println(xd.t6());
+        System.out.println(xd.t7());
+        System.out.println(xd.t8());
+        System.out.println(xd.t9());
+        System.out.println(xd.t10());
+        System.out.println(xd.t11());
+        System.out.println(xd.optimalMeasure());
+    }
+
+    private static void generate_v2(SecondFormSingleSummary xd) {
+        System.out.println("-----------------------------");
+        System.out.println(xd.t1());
+        System.out.println(xd.t2());
+        System.out.println(xd.t3());
+        System.out.println(xd.t4());
+        System.out.println(xd.t5());
+        System.out.println(xd.t6());
+        System.out.println(xd.t7());
+        System.out.println(xd.t8());
+        System.out.println(xd.t9());
+        System.out.println(xd.t10());
+        System.out.println(xd.t11());
+        System.out.println(xd.optimalMeasure());
     }
 
     public static HashSet<NumericVariable> getSelectNumericVariables() {
