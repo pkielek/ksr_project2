@@ -139,7 +139,7 @@ public class FirstFormSingleSummary extends LinguisticSummary {
         getSummarizersByVariableAndLabel().forEach((key,value) -> {
             AtomicReference<Integer> sum = new AtomicReference<>(0);
             NumericVariable numVar = NumericVariable.valueOf(key);
-            subjectEntries.forEach((elem) -> sum.updateAndGet(v -> v + LBR.getVariables().get(numVar).getLabels().get(value).calcValue(HBR.getBooking(elem).getNumericVariable(numVar)) > 0 ? 1 : 0));
+            subjectEntries.forEach((elem) -> sum.updateAndGet(v -> v + (LBR.getVariables().get(numVar).getLabels().get(value).calcValue(HBR.getBooking(elem).getNumericVariable(numVar)) > 0 ? 1 : 0)));
             product.updateAndGet(v -> v * Double.valueOf(sum.get())/ (double) size);
         });
         getQualityMeasures().put("t4",Math.abs(product.get()-(getQualityMeasures().containsKey("t3")? getQualityMeasures().get("t3") :t3())));

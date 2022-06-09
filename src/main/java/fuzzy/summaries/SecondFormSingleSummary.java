@@ -148,7 +148,8 @@ public class SecondFormSingleSummary extends LinguisticSummary {
     public Double t3() {
         if(getQualityMeasures().get("t3")!=null)
             return getQualityMeasures().get("t3");
-        getQualityMeasures().put("t3",Double.valueOf(getSummaryResultSet().support().count())/ (double) getSummaryResultSet().getEntries().size());
+        FuzzySet summaryAndQualifierResultSet = getSummaryResultSet().And(getQualifierResultSet());
+        getQualityMeasures().put("t3",Double.valueOf(summaryAndQualifierResultSet.support().count())/ Double.valueOf(getQualifierResultSet().support().count()));
         return getQualityMeasures().get("t3");
     }
 
@@ -173,7 +174,7 @@ public class SecondFormSingleSummary extends LinguisticSummary {
         getSummarizersByVariableAndLabel().forEach((key,value) -> {
             AtomicReference<Integer> sum = new AtomicReference<>(0);
             NumericVariable numVar = NumericVariable.valueOf(key);
-            subjectEntries.forEach((elem) -> sum.updateAndGet(v -> v + LBR.getVariables().get(numVar).getLabels().get(value).calcValue(HBR.getBooking(elem).getNumericVariable(numVar)) > 0 ? 1 : 0));
+            subjectEntries.forEach((elem) -> sum.updateAndGet(v -> v + (LBR.getVariables().get(numVar).getLabels().get(value).calcValue(HBR.getBooking(elem).getNumericVariable(numVar)) > 0 ? 1 : 0)));
             product.updateAndGet(v -> v * Double.valueOf(sum.get())/ (double) size);
         });
         getQualityMeasures().put("t4",Math.abs(product.get()-(getQualityMeasures().containsKey("t3")? getQualityMeasures().get("t3") :t3())));
