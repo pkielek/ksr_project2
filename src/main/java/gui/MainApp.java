@@ -3,6 +3,7 @@ package gui;
 import fuzzy.CrispSet;
 import fuzzy.LinguisticVariableRepository;
 import fuzzy.summaries.FirstFormMultiSummary;
+import fuzzy.summaries.SecondFormMultiSummary;
 import fuzzy.summaries.SummaryResult;
 import gui.helpers.Observer;
 import javafx.application.Application;
@@ -29,9 +30,13 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
     private static Scene scene;
 
     public static void main(String[] args) throws IOException {
-        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
-        LBR.loadAllVariables();
-        saveCsvMultiSummaryResults(generateFirstFormMultiSummaryList(),"newlist");
+//        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
+//        LBR.loadAllVariables();
+//        new FirstFormMultiSummary(new CrispSet(StringVariable.hotel,"CITY_HOTEL"),new CrispSet(StringVariable.hotel,"RESORT_HOTEL"),"half of",
+//                new TreeMap<>(Map.of(NumericVariable.leadTime.toString(),"very long")));
+//        new FirstFormMultiSummary(new CrispSet(StringVariable.hotel,"RESORT_HOTEL"),new CrispSet(StringVariable.hotel,"CITY_HOTEL"),"half of",
+//                new TreeMap<>(Map.of(NumericVariable.leadTime.toString(),"very long")));
+
         launch();
     }
 
@@ -333,28 +338,30 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
         return list;
     }
 
-//    public static ArrayList<SummaryResult> generateSecondFormMultiSummaryList() throws IOException {
-//        ArrayList<SummaryResult> list = new ArrayList<>();
-//        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
-//        getCompoundSelectStringVariables().forEach((stringVariable,filterValues) -> {
-//            Generator.combination(filterValues).simple(2).forEach((filterValueSet) -> {
-//                getSelectNumericVariables().forEach((numericVariable) -> {
-//                    HashSet<NumericVariable> filteredNumericVariables = getSelectNumericVariables();
-//                    filteredNumericVariables.remove(numericVariable);
-//                    filteredNumericVariables.forEach((qualifierNumericVariable) -> {
-//                        LBR.getVariables().get(numericVariable).getLabels().forEach((summarizerLabel, membershipFunction1) -> {
-//                            LBR.getVariables().get(qualifierNumericVariable).getLabels().forEach((qualifierLabel,membershipFunction2) -> {
-//                                LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().forEach((quantifierLabel,quantifierFunction) -> {
-//                                    list.add(new SecondFormMultiSummary(new CrispSet(stringVariable,filterValueSet.get(0)),new CrispSet(stringVariable,filterValueSet.get(1)),quantifierLabel,new TreeMap(Map.of(numericVariable.toString(),summarizerLabel)),new TreeMap(Map.of(qualifierNumericVariable.toString(),qualifierLabel))).retrieveResults());
-//                                });
-//                            });
-//                        });
-//                    });
-//                });
-//            });
-//        });
-//        return list;
-//    }
+    public static ArrayList<SummaryResult> generateSecondFormMultiSummaryList() throws IOException {
+        ArrayList<SummaryResult> list = new ArrayList<>();
+        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
+        getCompoundSelectStringVariables().forEach((stringVariable,filterValues) -> {
+            Generator.combination(filterValues).simple(2).forEach((filterValueSet) -> {
+                getSelectNumericVariables().forEach((numericVariable) -> {
+                    HashSet<NumericVariable> filteredNumericVariables = getSelectNumericVariables();
+                    filteredNumericVariables.remove(numericVariable);
+                    filteredNumericVariables.forEach((qualifierNumericVariable) -> {
+                        LBR.getVariables().get(numericVariable).getLabels().forEach((summarizerLabel, membershipFunction1) -> {
+                            LBR.getVariables().get(qualifierNumericVariable).getLabels().forEach((qualifierLabel,membershipFunction2) -> {
+                                LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().forEach((quantifierLabel,quantifierFunction) -> {
+                                    list.add(new SecondFormMultiSummary(new CrispSet(stringVariable,filterValueSet.get(0)),new CrispSet(stringVariable,filterValueSet.get(1)),quantifierLabel,new TreeMap(Map.of(numericVariable.toString(),summarizerLabel)),new TreeMap(Map.of(qualifierNumericVariable.toString(),qualifierLabel))).retrieveResults());
+                                    list.add(new SecondFormMultiSummary(new CrispSet(stringVariable,filterValueSet.get(1)),new CrispSet(stringVariable,filterValueSet.get(0)),quantifierLabel,new TreeMap(Map.of(numericVariable.toString(),summarizerLabel)),new TreeMap(Map.of(qualifierNumericVariable.toString(),qualifierLabel))).retrieveResults());
+
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+        return list;
+    }
 //
 //    public static ArrayList<SummaryResult> generateThirdFormMultiSummaryList() throws IOException {
 //        ArrayList<SummaryResult> list = new ArrayList<>();
