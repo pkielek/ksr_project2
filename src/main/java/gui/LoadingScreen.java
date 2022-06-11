@@ -22,21 +22,8 @@ public class LoadingScreen {
     @FXML
     private Text introText;
     @FXML
-    private AnchorPane loadingPane;
-    @FXML
     private Button loadAllDataButton;
 
-    private boolean loadBegun=false;
-
-    @FXML
-    private void initialize() {
-        loadingPane.setOnKeyPressed(e -> {
-            if(e.getCode()== KeyCode.SPACE && !loadBegun) {
-                loadBegun=true;
-                loadAllData();
-            }
-        });
-    }
 
     @FXML
     public void loadAllData() {

@@ -1,13 +1,13 @@
 package fuzzy;
 
+import fuzzy.summaries.SummaryResult;
 import lombok.Getter;
 import model.NumericVariable;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.StringJoiner;
 
 public class LinguisticVariableRepository{
     private static LinguisticVariableRepository instance;
@@ -58,6 +58,60 @@ public class LinguisticVariableRepository{
             if(variable!=NumericVariable.undefined) {
                 loadLinguisticVariable(variable.toString());
             }
+        }
+    }
+
+    public void saveVariable(NumericVariable variable) throws IOException {
+        if(variable!=NumericVariable.undefined) {
+            LinguisticVariable lVariable = getVariables().get(variable);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("ling_var/"+ variable.toString() + ".csv"), StandardCharsets.UTF_8));
+            bw.write(variable.toString());
+            bw.newLine();
+            StringJoiner universeLine = new StringJoiner(",");
+
+            universeLine.add(lVariable.getUniverse().getIsContinuous().toString()).add(lVariable.getUniverse().getLeftLimit().toString())
+                    .add(lVariable.getUniverse().getRightLimit().toString());
+            if(!lVariable.getUniverse().getIsContinuous()) {
+                universeLine.add(lVariable.getUniverse().getInterval().toString());
+            }
+            bw.write(universeLine.toString());
+            lVariable.getLabels().forEach(
+                    (k,v) -> {
+                        try {
+                            bw.newLine();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        StringJoiner labelLine = new StringJoiner(",");
+                        labelLine.add(k);
+                        if(v instanceof TriangleFunction) {
+                            TriangleFunction tempV =(TriangleFunction) v;
+                            labelLine.add("1");
+                            labelLine.add(tempV.getStart().toString());
+                            labelLine.add(tempV.getMiddle().toString());
+                            labelLine.add(tempV.getEnd().toString());
+                        } else if(v instanceof TrapezoidalFunction) {
+                            TrapezoidalFunction tempV =(TrapezoidalFunction) v;
+                            labelLine.add("2");
+                            labelLine.add(tempV.getStart().toString());
+                            labelLine.add(tempV.getStartMiddle().toString());
+                            labelLine.add(tempV.getEndMiddle().toString());
+                            labelLine.add(tempV.getEnd().toString());
+                        } else if(v instanceof GaussianFunction) {
+                            GaussianFunction tempV = (GaussianFunction) v;
+                            labelLine.add("0");
+                            labelLine.add(tempV.getMiddle().toString());
+                            labelLine.add(tempV.getVariance().toString());
+                        }
+                        try {
+                            bw.write(labelLine.toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
+            bw.flush();
+            bw.close();
         }
     }
 }

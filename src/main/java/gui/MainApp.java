@@ -1,5 +1,9 @@
 package gui;
 
+import fuzzy.CrispSet;
+import fuzzy.LinguisticVariableRepository;
+import fuzzy.summaries.FirstFormMultiSummary;
+import fuzzy.summaries.SummaryResult;
 import gui.helpers.Observer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -10,8 +14,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
+import model.NumericVariable;
+import model.StringVariable;
+import org.paukov.combinatorics3.Generator;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 
 public class MainApp extends Application implements EventHandler<ActionEvent> {
@@ -20,6 +29,9 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
     private static Scene scene;
 
     public static void main(String[] args) throws IOException {
+        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
+        LBR.loadAllVariables();
+        saveCsvMultiSummaryResults(generateFirstFormMultiSummaryList(),"newlist");
         launch();
     }
 
@@ -35,6 +47,7 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
 
     public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
+
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
@@ -145,16 +158,16 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
 ////        System.out.println(xd.optimalMeasure());
 //    }
 //
-//    public static HashSet<NumericVariable> getSelectNumericVariables() {
-//        HashSet<NumericVariable> numericVariables = new HashSet<>();
-//        numericVariables.add(NumericVariable.bookingChanges);
-//        numericVariables.add(NumericVariable.numberOfAdults);
-//        numericVariables.add(NumericVariable.leadTime);
-//        numericVariables.add(NumericVariable.requiredCarParkingSpaces);
-//        numericVariables.add(NumericVariable.totalOfSpecialRequests);
-//        numericVariables.add(NumericVariable.staysInWeekNights);
-//        return numericVariables;
-//    }
+    public static HashSet<NumericVariable> getSelectNumericVariables() {
+        HashSet<NumericVariable> numericVariables = new HashSet<>();
+        numericVariables.add(NumericVariable.bookingChanges);
+        numericVariables.add(NumericVariable.numberOfAdults);
+        numericVariables.add(NumericVariable.leadTime);
+        numericVariables.add(NumericVariable.requiredCarParkingSpaces);
+        numericVariables.add(NumericVariable.totalOfSpecialRequests);
+        numericVariables.add(NumericVariable.staysInWeekNights);
+        return numericVariables;
+    }
 //
 //    public static HashMap<String,StringVariable> getSelectStringVariables() {
 //        HashMap<String,StringVariable> subjects = new HashMap<>();
@@ -167,20 +180,20 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
 //        return subjects;
 //    }
 //
-//    public static HashMap<StringVariable,HashSet<String>> getCompoundSelectStringVariables() {
-//        HashMap<StringVariable,HashSet<String>> subjects = new HashMap<>();
-////        HashSet<String> countries = new HashSet<>();
-////        countries.add("Portugal");
-////        countries.add("Germany");
-////        countries.add("United Kingdom");
-////        countries.add("Spain");
-////        subjects.put(StringVariable.countryCode,countries);
-//        HashSet<String> hotels = new HashSet<>();
-//        hotels.add("RESORT_HOTEL");
-//        hotels.add("CITY_HOTEL");
-//        subjects.put(StringVariable.hotel,hotels);
-//        return subjects;
-//    }
+    public static HashMap<StringVariable, HashSet<String>> getCompoundSelectStringVariables() {
+        HashMap<StringVariable,HashSet<String>> subjects = new HashMap<>();
+        HashSet<String> countries = new HashSet<>();
+        countries.add("Portugal");
+        countries.add("Germany");
+        countries.add("United Kingdom");
+        countries.add("Spain");
+        subjects.put(StringVariable.countryCode,countries);
+        HashSet<String> hotels = new HashSet<>();
+        hotels.add("RESORT_HOTEL");
+        hotels.add("CITY_HOTEL");
+        subjects.put(StringVariable.hotel,hotels);
+        return subjects;
+    }
 //
 //    public static ArrayList<SummaryResult> generateFirstFormSingleSummaryFirstList() throws IOException {
 //        ArrayList<SummaryResult> list = new ArrayList<>();
@@ -301,24 +314,25 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
 //        return list;
 //    }
 //
-//    public static ArrayList<SummaryResult> generateFirstFormMultiSummaryList() throws IOException {
-//        ArrayList<SummaryResult> list = new ArrayList<>();
-//        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
-//        getCompoundSelectStringVariables().forEach((stringVariable,filterValues) -> {
-//            Generator.combination(filterValues).simple(2).forEach((filterValueSet) -> {
-//                getSelectNumericVariables().forEach((numericVariable) -> {
-//                    LBR.getVariables().get(numericVariable).getLabels().forEach((summarizerLabel, membershipFunction1) -> {
-//                        LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().forEach((quantifierLabel,quantifierFunction) -> {
-//                            list.add(new FirstFormMultiSummary(new CrispSet(stringVariable,filterValueSet.get(0)),new CrispSet(stringVariable,filterValueSet.get(1)),quantifierLabel,new TreeMap(Map.of(numericVariable.toString(),summarizerLabel))).retrieveResults());
-//                        });
-//                    });
-//                });
-//            });
-//        });
-//
-//        return list;
-//    }
-//
+    public static ArrayList<SummaryResult> generateFirstFormMultiSummaryList() throws IOException {
+        ArrayList<SummaryResult> list = new ArrayList<>();
+        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
+        getCompoundSelectStringVariables().forEach((stringVariable,filterValues) -> {
+            Generator.combination(filterValues).simple(2).forEach((filterValueSet) -> {
+                getSelectNumericVariables().forEach((numericVariable) -> {
+                    LBR.getVariables().get(numericVariable).getLabels().forEach((summarizerLabel, membershipFunction1) -> {
+                        LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().forEach((quantifierLabel, quantifierFunction) -> {
+                            list.add(new FirstFormMultiSummary(new CrispSet(stringVariable,filterValueSet.get(0)),new CrispSet(stringVariable,filterValueSet.get(1)),quantifierLabel,new TreeMap(Map.of(numericVariable.toString(),summarizerLabel))).retrieveResults());
+                            list.add(new FirstFormMultiSummary(new CrispSet(stringVariable,filterValueSet.get(1)),new CrispSet(stringVariable,filterValueSet.get(0)),quantifierLabel,new TreeMap(Map.of(numericVariable.toString(),summarizerLabel))).retrieveResults());
+                        });
+                    });
+                });
+            });
+        });
+
+        return list;
+    }
+
 //    public static ArrayList<SummaryResult> generateSecondFormMultiSummaryList() throws IOException {
 //        ArrayList<SummaryResult> list = new ArrayList<>();
 //        LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
@@ -396,19 +410,19 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
 //        bw.close();
 //    }
 //
-//    public static void saveCsvMultiSummaryResults(ArrayList<SummaryResult> data, String filename) throws IOException {
-//        data.sort(Comparator.comparingDouble(o -> o.getMeasures().get("T")));
-//        data.removeIf(p->p.getMeasures().get("T").isNaN());
-//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename + ".csv"), StandardCharsets.UTF_8));
-//        bw.write("Summary,T");
-//        bw.newLine();
-//        for (SummaryResult result : data) {
-//            bw.write(result.toCsvLine());
-//            bw.newLine();
-//        }
-//        bw.flush();
-//        bw.close();
-//    }
+    public static void saveCsvMultiSummaryResults(ArrayList<SummaryResult> data, String filename) throws IOException {
+        data.sort(Comparator.comparingDouble(o -> o.getMeasures().get("T")));
+        data.removeIf(p->p.getMeasures().get("T").isNaN());
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename + ".csv"), StandardCharsets.UTF_8));
+        bw.write("Summary,T");
+        bw.newLine();
+        for (SummaryResult result : data) {
+            bw.write(result.toCsvLine());
+            bw.newLine();
+        }
+        bw.flush();
+        bw.close();
+    }
 //
 //    public static void saveCsvMultiSummaryFourthFormResults(ArrayList<SummaryResult> data, String filename) throws IOException {
 //        data.sort(Comparator.comparingDouble(o -> o.getMeasures().get("T")));
