@@ -1,6 +1,9 @@
 package gui;
 
 import fuzzy.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -8,6 +11,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,12 +21,16 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
+import model.HotelBookingRepository;
 import model.NumericVariable;
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
@@ -146,7 +154,7 @@ public class MainView {
             }
         };
 
-        StringConverter<Double> converter = new StringConverter<Double>() {
+        StringConverter<Double> converter = new StringConverter<>() {
 
             @Override
             public Double fromString(String s) {
@@ -198,24 +206,9 @@ public class MainView {
     }
 
     private void initializeMembershipSelects() {
-        triangleSelect.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                triangleSelected();
-            }
-        });
-        trapezoidalSelect.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                trapezoidalSelected();
-            }
-        });
-        gaussianSelect.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                gaussianSelected();
-            }
-        });
+        triangleSelect.setOnAction(actionEvent -> triangleSelected());
+        trapezoidalSelect.setOnAction(actionEvent -> trapezoidalSelected());
+        gaussianSelect.setOnAction(actionEvent -> gaussianSelected());
     }
 
     public void triangleSelected() {
@@ -257,11 +250,11 @@ public class MainView {
             }
         };
 
-        StringConverter<Double> converter = new StringConverter<Double>() {
+        StringConverter<Double> converter = new StringConverter<>() {
 
             @Override
             public Double fromString(String s) {
-                if (s.isEmpty() || ".".equals(s) || "-.".equals(s)|| "-".equals(s)) {
+                if (s.isEmpty() || ".".equals(s) || "-.".equals(s) || "-".equals(s)) {
                     return 1.0;
                 } else {
                     return Double.valueOf(s);
@@ -301,24 +294,21 @@ public class MainView {
             item1.setOnAction(actionEvent1 -> {
                 removeLabel.setDisable(false);
                 labelSelect.setText(k+" "+variable.getSummarizerTitle());
-                labelNameField.setText(k);
                 labelNameAdditional.setText(variable.getSummarizerTitle());
+                labelNameField.setText(k);
                 disabledAndVisibilitiesFirstSet(true);
-                if(v instanceof TriangleFunction) {
-                    TriangleFunction tempV =(TriangleFunction) v;
+                if(v instanceof TriangleFunction tempV) {
                     triangleSelected();
                     functionField1.setText(String.valueOf(tempV.getStart()));
                     functionField2.setText(String.valueOf(tempV.getMiddle()));
                     functionField3.setText(String.valueOf(tempV.getEnd()));
-                } else if(v instanceof TrapezoidalFunction) {
-                    TrapezoidalFunction tempV =(TrapezoidalFunction) v;
+                } else if(v instanceof TrapezoidalFunction tempV) {
                     trapezoidalSelected();
                     functionField1.setText(String.valueOf(tempV.getStart()));
                     functionField2.setText(String.valueOf(tempV.getStartMiddle()));
                     functionField3.setText(String.valueOf(tempV.getEndMiddle()));
                     functionField4.setText(String.valueOf(tempV.getEnd()));
-                } else if(v instanceof GaussianFunction) {
-                    GaussianFunction tempV = (GaussianFunction) v;
+                } else if(v instanceof GaussianFunction tempV) {
                     gaussianSelected();
                     functionField1.setText(String.valueOf(tempV.getMiddle()));
                     functionField2.setText(String.valueOf(tempV.getVariance()));
@@ -327,19 +317,16 @@ public class MainView {
             labelSelect.getItems().add(item1);
         });
         MenuItem addItem = new MenuItem("---Add new---");
-        addItem.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                labelSelect.setText("---Adding new variable---");
-                labelNameField.clear();
-                labelNameAdditional.setText(variable.getSummarizerTitle());
-                disabledAndVisibilitiesFirstSet(true);
-                triangleSelected();
-                functionField1.clear();
-                functionField2.clear();
-                functionField3.clear();
-                functionField4.clear();
-            }
+        addItem.setOnAction(actionEvent -> {
+            labelSelect.setText("---Adding new variable---");
+            labelNameField.clear();
+            labelNameAdditional.setText(variable.getSummarizerTitle());
+            disabledAndVisibilitiesFirstSet(true);
+            triangleSelected();
+            functionField1.clear();
+            functionField2.clear();
+            functionField3.clear();
+            functionField4.clear();
         });
         labelSelect.getItems().add(addItem);
     }
@@ -351,8 +338,7 @@ public class MainView {
         saveLabel.setDisable(!bool);
     }
 
-    @FXML
-    public void makePreview() {
+    public MembershipFunction createFunctionFromFields() {
         NumericVariable variable = NumericVariable.findByName(linguisticVariableSelect.getText());
         UniverseOfDiscourse universe = LBR.getVariables().get(variable).getUniverse();
         MembershipFunction function = null;
@@ -368,23 +354,76 @@ public class MainView {
                 default -> throw new IllegalArgumentException("Fatal error: invalid function");
             }
             errorLabel.setText("");
-            assert variable != null;
-            membershipFunctionChart.setTitle(variable.getName());
-            ((NumberAxis) membershipFunctionChart.getXAxis()).setUpperBound(universe.getRightLimit());
-            ((NumberAxis) membershipFunctionChart.getXAxis()).setLowerBound(universe.getLeftLimit());
-            membershipFunctionChart.getData().clear();
-
-        } catch(IllegalArgumentException e) {
-            errorLabel.setText(e.getMessage());
+        } catch(IllegalArgumentException ex) {
+            Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e-> errorLabel.setText(ex.getMessage())),
+                    new KeyFrame(Duration.seconds(3.0), e-> errorLabel.setText("")));
+            timeline.playFromStart();
         }
-        assert function != null;
-        XYChart.Series series = new XYChart.Series();
-        Double increment = (universe.getInterval()!=null?(universe.getInterval()==0.01?1.0: universe.getInterval()):(universe.getRightLimit()==1.0?0.01:100));
-        for(double i = universe.getLeftLimit(); i<= universe.getRightLimit(); i+=increment) {
-            series.getData().add(new XYChart.Data(i,function.calcValue(i)));
-        }
-        series.setName(labelNameField.getText().equals("")?"unnamed":labelNameField.getText());
-        membershipFunctionChart.getData().add(series);
+        return function;
     }
 
+    @FXML
+    public void makePreview() {
+        NumericVariable variable = NumericVariable.findByName(linguisticVariableSelect.getText());
+        UniverseOfDiscourse universe = LBR.getVariables().get(variable).getUniverse();
+        MembershipFunction function = createFunctionFromFields();
+        assert variable != null;
+        membershipFunctionChart.setTitle(variable.getName());
+        ((NumberAxis) membershipFunctionChart.getXAxis()).setUpperBound(universe.getRightLimit());
+        ((NumberAxis) membershipFunctionChart.getXAxis()).setLowerBound(universe.getLeftLimit());
+        membershipFunctionChart.getData().clear();
+        if (errorLabel.getText().equals((""))) {
+            XYChart.Series series = new XYChart.Series();
+            double increment = (universe.getInterval()!=null?(universe.getInterval()==0.01?1.0: universe.getInterval()):(universe.getRightLimit()==1.0?0.01:100));
+            for(double i = universe.getLeftLimit(); i<= universe.getRightLimit(); i+=increment) {
+                series.getData().add(new XYChart.Data(i,function.calcValue(i)));
+            }
+            series.setName(labelNameField.getText().equals("")?"unnamed":labelNameField.getText());
+            membershipFunctionChart.getData().add(series);
+        }
+    }
+
+    @FXML
+    public void saveFunction() throws IOException {
+        NumericVariable variable = NumericVariable.findByName(linguisticVariableSelect.getText());
+        MembershipFunction function = createFunctionFromFields();
+        if(function!=null) {
+            LBR.getVariables().get(variable).getLabels().put(labelNameField.getText(),function);
+            LBR.saveVariable(variable);
+        }
+        assert variable != null;
+        renewLabels(variable);
+        removeLabel.setDisable(false);
+        saveLabel.setText("Save changes");
+        labelSelect.setText(labelNameField.getText()+" "+labelNameAdditional.getText());
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e-> {
+            errorLabel.setTextFill(Color.color(0,1,0));
+            errorLabel.setText("Label saved sucessfully");
+        }),new KeyFrame(Duration.seconds(3.0), e-> {
+            errorLabel.setTextFill(Color.color(1,0,0));
+            errorLabel.setText("");
+        }));
+        timeline.playFromStart();
+
+    }
+
+    @FXML
+    public void removeFunction() throws IOException {
+        NumericVariable variable = NumericVariable.findByName(linguisticVariableSelect.getText());
+        LBR.getVariables().get(variable).getLabels().remove(labelNameField.getText());
+        LBR.saveVariable(variable);
+        assert variable != null;
+        renewLabels(variable);
+        removeLabel.setDisable(true);
+        disabledAndVisibilitiesFirstSet(false);
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e-> {
+            errorLabel.setTextFill(Color.color(0,1,0));
+            errorLabel.setText("Label removed succesfully");
+        }),new KeyFrame(Duration.seconds(3.0), e-> {
+            errorLabel.setTextFill(Color.color(1,0,0));
+            errorLabel.setText("");
+        }));
+        timeline.playFromStart();
+    }
 }

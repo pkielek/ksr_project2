@@ -64,7 +64,7 @@ public class LinguisticVariableRepository{
     public void saveVariable(NumericVariable variable) throws IOException {
         if(variable!=NumericVariable.undefined) {
             LinguisticVariable lVariable = getVariables().get(variable);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("ling_var/"+ variable.toString() + ".csv"), StandardCharsets.UTF_8));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("ling_var/"+ variable.toString() + ".txt"), StandardCharsets.UTF_8));
             bw.write(variable.toString());
             bw.newLine();
             StringJoiner universeLine = new StringJoiner(",");
@@ -84,21 +84,18 @@ public class LinguisticVariableRepository{
                         }
                         StringJoiner labelLine = new StringJoiner(",");
                         labelLine.add(k);
-                        if(v instanceof TriangleFunction) {
-                            TriangleFunction tempV =(TriangleFunction) v;
+                        if(v instanceof TriangleFunction tempV) {
                             labelLine.add("1");
                             labelLine.add(tempV.getStart().toString());
                             labelLine.add(tempV.getMiddle().toString());
                             labelLine.add(tempV.getEnd().toString());
-                        } else if(v instanceof TrapezoidalFunction) {
-                            TrapezoidalFunction tempV =(TrapezoidalFunction) v;
+                        } else if(v instanceof TrapezoidalFunction tempV) {
                             labelLine.add("2");
                             labelLine.add(tempV.getStart().toString());
                             labelLine.add(tempV.getStartMiddle().toString());
                             labelLine.add(tempV.getEndMiddle().toString());
                             labelLine.add(tempV.getEnd().toString());
-                        } else if(v instanceof GaussianFunction) {
-                            GaussianFunction tempV = (GaussianFunction) v;
+                        } else if(v instanceof GaussianFunction tempV) {
                             labelLine.add("0");
                             labelLine.add(tempV.getMiddle().toString());
                             labelLine.add(tempV.getVariance().toString());

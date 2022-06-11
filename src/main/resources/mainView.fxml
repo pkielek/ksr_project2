@@ -291,7 +291,7 @@
                                                 <Insets bottom="5.0" left="10.0" top="5.0" />
                                              </padding>
                                           </HBox>
-                                          <Button fx:id="saveLabel" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="233.0" text="Save changes">
+                                          <Button fx:id="saveLabel" disable="true" mnemonicParsing="false" onAction="#saveFunction" prefHeight="25.0" prefWidth="233.0" text="Save changes">
                                              <VBox.margin>
                                                 <Insets left="15.0" />
                                              </VBox.margin>
@@ -301,7 +301,7 @@
                                                 <Insets left="15.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <Button fx:id="removeLabel" disable="true" mnemonicParsing="false" prefHeight="25.0" prefWidth="233.0" text="Remove">
+                                          <Button fx:id="removeLabel" disable="true" mnemonicParsing="false" onAction="#removeFunction" prefHeight="25.0" prefWidth="233.0" text="Remove">
                                              <VBox.margin>
                                                 <Insets left="15.0" />
                                              </VBox.margin>
