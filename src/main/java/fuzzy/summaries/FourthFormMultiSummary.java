@@ -53,10 +53,10 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
                 "More reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
                         + " than reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
                         + summarizerSummary);
-        setSymmetricSummary(
-                "More reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
-                        + " than reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
-                        + summarizerSummary);
+//        setSymmetricSummary(
+//                "More reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
+//                        + " than reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
+//                        + summarizerSummary);
 
         if (summarizersByVariableAndLabel.isEmpty()) {
             throw new IllegalArgumentException("No summarizers in summary");
@@ -86,27 +86,26 @@ public class FourthFormMultiSummary extends MultiLinguisticSummary {
                 )
         );
         setT(1.0-inclusionMembershipFunctionValuesSum.get()/ inclusionMembershipFunctionValuesCount.get());
-        System.out.println(getT());
-        inclusionMembershipFunctionValuesCount.updateAndGet(v->0L);
-        inclusionMembershipFunctionValuesSum.updateAndGet(v->0.0);
-
-        getFirstSubjectSummaryResultSet().getEntries().forEach(
-                (k1,v1)-> getSecondSubjectSummaryResultSet().getEntries().forEach(
-                        (k2,v2) -> {
-                            inclusionMembershipFunctionValuesSum.updateAndGet(v -> v + 1 - v1 + v1 * v2);
-                            inclusionMembershipFunctionValuesCount.updateAndGet(v -> v + 1);
-                        }
-                )
-        );
-        setSymmetricSummaryT(1.0-inclusionMembershipFunctionValuesSum.get()/ inclusionMembershipFunctionValuesCount.get());
+//        System.out.println(getT());
+//        inclusionMembershipFunctionValuesCount.updateAndGet(v->0L);
+//        inclusionMembershipFunctionValuesSum.updateAndGet(v->0.0);
+//
+//        getFirstSubjectSummaryResultSet().getEntries().forEach(
+//                (k1,v1)-> getSecondSubjectSummaryResultSet().getEntries().forEach(
+//                        (k2,v2) -> {
+//                            inclusionMembershipFunctionValuesSum.updateAndGet(v -> v + 1 - v1 + v1 * v2);
+//                            inclusionMembershipFunctionValuesCount.updateAndGet(v -> v + 1);
+//                        }
+//                )
+//        );
+//        setSymmetricSummaryT(1.0-inclusionMembershipFunctionValuesSum.get()/ inclusionMembershipFunctionValuesCount.get());
     }
 
 
     @Override
     public SummaryResult retrieveResults() {
         getQualityMeasures().put("T",optimalMeasure());
-        getQualityMeasures().put("symmetricT",getSymmetricSummaryT());
 
-        return new SummaryResult(getSummary()+","+getSymmetricSummary(),getQualityMeasures());
+        return new SummaryResult(getSummary(),getQualityMeasures());
     }
 }

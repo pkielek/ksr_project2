@@ -2,13 +2,9 @@ package gui;
 
 import fuzzy.LinguisticVariableRepository;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import model.HotelBookingRepository;
 import model.NumericVariable;

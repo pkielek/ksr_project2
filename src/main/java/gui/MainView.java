@@ -26,13 +26,15 @@ import model.NumericVariable;
 import model.StringVariable;
 import org.paukov.combinatorics3.Generator;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class MainView {
 
@@ -239,52 +241,6 @@ public class MainView {
     }
 
     private void initializeTable() {
-        HashMap<String,Double> weights = new HashMap<>();
-        weights.put("t1",0.1);
-        weights.put("t2",0.2);
-        weights.put("t3",0.3);
-        weights.put("t4",0.4);
-        weights.put("t5",0.5);
-        weights.put("t6",0.6);
-        weights.put("t7",0.7);
-        weights.put("t8",0.8);
-        weights.put("t9",0.9);
-        weights.put("t10",0.0);
-        weights.put("t11",0.0);
-        weights.put("Optimum",0.5);
-        SingleSummaryTable sst1 = new SingleSummaryTable(new SummaryResult("raz",weights));
-        SingleSummaryTable sst2 = new SingleSummaryTable(new SummaryResult("dwa",weights));
-        SingleSummaryTable sst3 = new SingleSummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights));
-        singleSummaryObservableList.addAll(sst1, sst2, sst3);
-
-        HashMap<String,Double> weights1 = new HashMap<>();
-        weights1.put("t1",0.1);
-        weights1.put("t2",0.06);
-        weights1.put("t3",0.004);
-        weights1.put("t4",0.4);
-        weights1.put("t5",0.5);
-        weights1.put("t6",0.6);
-        weights1.put("t7",0.7);
-        weights1.put("t8",0.8);
-        weights1.put("t9",0.9);
-        weights1.put("t10",0.0);
-        weights1.put("t11",0.0);
-        weights1.put("Optimum",0.5);
-        SingleSummaryTable sst11 = new SingleSummaryTable(new SummaryResult("raz",weights1));
-        SingleSummaryTable sst21 = new SingleSummaryTable(new SummaryResult("dwa",weights1));
-        SingleSummaryTable sst31 = new SingleSummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights));
-        singleSummaryObservableList.addAll(sst11, sst21, sst31);
-
-
-        HashMap<String,Double> weights2 = new HashMap<>();
-        weights2.put("T",0.1);
-        MultiSummaryTable sst12 = new MultiSummaryTable(new SummaryResult("raz",weights2));
-        weights2.put("T",0.2);
-        MultiSummaryTable sst22 = new MultiSummaryTable(new SummaryResult("dwa",weights2));
-        weights2.put("T",0.001);
-        MultiSummaryTable sst32 = new MultiSummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights2));
-        multiSummaryObservableList.addAll(sst12, sst22, sst32);
-
         singleFormTableCheckBox.setCellFactory(cellData -> new CheckBoxTableCell<>());
         singleFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
         singleFormT1.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t1"));
@@ -716,14 +672,11 @@ public class MainView {
         if(subject2==null) {
             //Single subject all forms summarizers
             for(int i=1;i<=summarizerLabels.size();i++) {
-                System.out.println(i);
                 Generator.combination(summarizerLabels.keySet()).simple(i).stream().forEach((summarizerCombination) -> {
-                    System.out.println(summarizerCombination);
                     TreeSet<NumericVariable> filteredQualifiers = new TreeSet<>();
                     qualifierLabels.forEach((k,v) -> {
                         if(!summarizerCombination.contains(k)) {
                             filteredQualifiers.add(k);
-                            System.out.println(k);
                         }
                     });
                     ArrayList<TreeSet<String>> summarizersLabelsList = new ArrayList<>();
@@ -772,7 +725,6 @@ public class MainView {
         } else {
             for(int i=1;i<=summarizerLabels.size();i++) {
                 Generator.combination(summarizerLabels.keySet()).simple(i).stream().forEach((summarizerCombination) -> {
-                    System.out.println(summarizerCombination);
                     TreeSet<NumericVariable> filteredQualifiers = new TreeSet<>();
                     qualifierLabels.forEach((k,v) -> {
                         if(!summarizerCombination.contains(k)) {
@@ -793,6 +745,8 @@ public class MainView {
                         }
                         multiSummaryObservableList.add(new MultiSummaryTable(new FourthFormMultiSummary(new CrispSet(currentStringVariable,subject1),
                                 new CrispSet(currentStringVariable,subject2),summarizerFinalMap).retrieveResults()));
+                        multiSummaryObservableList.add(new MultiSummaryTable(new FourthFormMultiSummary(new CrispSet(currentStringVariable,subject2),
+                                new CrispSet(currentStringVariable,subject1),summarizerFinalMap).retrieveResults()));
                         relativeQuantifierLabels.forEach((relativeQuantifierLabel) -> {
                             multiSummaryObservableList.add(new MultiSummaryTable(new FirstFormMultiSummary(new CrispSet(currentStringVariable,subject1),
                                     new CrispSet(currentStringVariable,subject2),relativeQuantifierLabel,summarizerFinalMap).retrieveResults()));
