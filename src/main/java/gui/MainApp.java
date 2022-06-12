@@ -6,23 +6,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.DatabaseInitialize;
 
 import java.io.IOException;
 
 
 public class MainApp extends Application {
 
-    public static Stage stage;
     private static Scene scene;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        DatabaseInitialize.databaseInitialize();
         launch();
 }
 
-    private static void generate_multi(ThirdFormMultiSubjectSummary xd) {
-        System.out.println(xd.getSummary());
-        System.out.println(xd.getT());
-    }
 
     @Override
     public void start(Stage stage) throws IOException {
