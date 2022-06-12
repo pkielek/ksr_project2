@@ -1,9 +1,11 @@
 package gui;
 
 import fuzzy.*;
-import gui.helpers.SingleSummaryTable;
+import fuzzy.summaries.SummaryResult;
+import gui.helpers.SummaryTable;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +13,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,20 +29,25 @@ import java.util.regex.Pattern;
 
 public class MainView {
 
-    public TableView<SingleSummaryTable> singleFirstFormTable;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormResult;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT1;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT2;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT3;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT4;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT5;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT6;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT7;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT8;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT9;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT10;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormT11;
-    public TableColumn<SingleSummaryTable, String> singleFirstFormOptimum;
+    public TableView<SummaryTable> singleFormTable;
+    public TableColumn<SummaryTable, String> singleFormResult;
+    public TableColumn<SummaryTable, String> singleFormT1;
+    public TableColumn<SummaryTable, String> singleFormT2;
+    public TableColumn<SummaryTable, String> singleFormT3;
+    public TableColumn<SummaryTable, String> singleFormT4;
+    public TableColumn<SummaryTable, String> singleFormT5;
+    public TableColumn<SummaryTable, String> singleFormT6;
+    public TableColumn<SummaryTable, String> singleFormT7;
+    public TableColumn<SummaryTable, String> singleFormT8;
+    public TableColumn<SummaryTable, String> singleFormT9;
+    public TableColumn<SummaryTable, String> singleFormT10;
+    public TableColumn<SummaryTable, String> singleFormT11;
+    public TableColumn<SummaryTable, String> singleFormOptimum;
+    public TableColumn<SummaryTable, Boolean> singleFormTableCheckBox;
+    public TableView<SummaryTable> multiFormTable;
+    public TableColumn<SummaryTable, String> multiFormResult;
+    public TableColumn<SummaryTable, String> multiFormT;
+    public TableColumn<SummaryTable, Boolean> multiFormTableCheckBox;
 
     @FXML
     TreeView<String> treeViewCheckBox;
@@ -122,7 +130,9 @@ public class MainView {
     HashMap<String, Double> weights;
     HashMap<String,TextField> textFields;
 
-    ObservableList<SingleSummaryTable> singleSummaryObservableList = FXCollections.observableArrayList();
+    ObservableList<SummaryTable> singleSummaryObservableList = FXCollections.observableArrayList();
+    ObservableList<SummaryTable> multiSummaryObservableList = FXCollections.observableArrayList();
+
 
     @FXML
     private void initialize() {
@@ -140,28 +150,61 @@ public class MainView {
     }
 
     private void initializeTable() {
-        singleFirstFormTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        SingleSummaryTable sst1 = new SingleSummaryTable("raz", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
-        SingleSummaryTable sst2 = new SingleSummaryTable("dwa", "0.2", "0.2", "0.2", "0.2", "0.2", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
-        SingleSummaryTable sst3 = new SingleSummaryTable("trzy", "0.3", "0.3", "0.3", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
+        HashMap<String,Double> weights = new HashMap<>();
+        weights.put("t1",0.1);
+        weights.put("t2",0.2);
+        weights.put("t3",0.3);
+        weights.put("t4",0.4);
+        weights.put("t5",0.5);
+        weights.put("t6",0.6);
+        weights.put("t7",0.7);
+        weights.put("t8",0.8);
+        weights.put("t9",0.9);
+        weights.put("t10",0.0);
+        weights.put("t11",0.0);
+        weights.put("Optimum",0.5);
+        SummaryTable sst1 = new SummaryTable(new SummaryResult("raz",weights));
+        SummaryTable sst2 = new SummaryTable(new SummaryResult("dwa",weights));
+        SummaryTable sst3 = new SummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights));
         singleSummaryObservableList.addAll(sst1, sst2, sst3);
 
-        singleFirstFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
-        singleFirstFormT1.setCellValueFactory(cellData -> cellData.getValue().getT1());
-        singleFirstFormT2.setCellValueFactory(cellData -> cellData.getValue().getT2());
-        singleFirstFormT3.setCellValueFactory(cellData -> cellData.getValue().getT3());
-        singleFirstFormT4.setCellValueFactory(cellData -> cellData.getValue().getT4());
-        singleFirstFormT5.setCellValueFactory(cellData -> cellData.getValue().getT5());
-        singleFirstFormT6.setCellValueFactory(cellData -> cellData.getValue().getT6());
-        singleFirstFormT7.setCellValueFactory(cellData -> cellData.getValue().getT7());
-        singleFirstFormT8.setCellValueFactory(cellData -> cellData.getValue().getT8());
-        singleFirstFormT9.setCellValueFactory(cellData -> cellData.getValue().getT9());
-        singleFirstFormT10.setCellValueFactory(cellData -> cellData.getValue().getT10());
-        singleFirstFormT11.setCellValueFactory(cellData -> cellData.getValue().getT11());
-        singleFirstFormOptimum.setCellValueFactory(cellData -> cellData.getValue().getOptimum());
-        singleFirstFormTable.getItems().addAll(sst1, sst2, sst3);
-        singleFirstFormTable.setItems(singleSummaryObservableList);
+        singleFormTableCheckBox.setCellFactory(cellData -> new CheckBoxTableCell<>());
+        singleFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
+        singleFormT1.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t1"));
+        singleFormT2.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t2"));
+        singleFormT3.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t3"));
+        singleFormT4.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t4"));
+        singleFormT5.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t5"));
+        singleFormT6.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t6"));
+        singleFormT7.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t7"));
+        singleFormT8.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t8"));
+        singleFormT9.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t9"));
+        singleFormT10.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t10"));
+        singleFormT11.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t11"));
+        singleFormOptimum.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("Optimum"));
+        setIsSelectedCheckBox(sst1, sst2, sst3, singleFormTableCheckBox, singleFormTable);
+        singleFormTable.setItems(singleSummaryObservableList);
 
+
+        multiFormTableCheckBox.setCellFactory(cellData -> new CheckBoxTableCell<>());
+        multiFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
+        multiFormT.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t"));
+        setIsSelectedCheckBox(sst1, sst2, sst3, multiFormTableCheckBox, multiFormTable);
+        multiFormTable.setItems(multiSummaryObservableList);
+
+    }
+
+    private void setIsSelectedCheckBox(SummaryTable sst1, SummaryTable sst2, SummaryTable sst3,
+                                       TableColumn<SummaryTable, Boolean> anyFormTableCheckBox,
+                                       TableView<SummaryTable> anyFormTable) {
+        anyFormTableCheckBox.setCellValueFactory(cellData -> {
+            SummaryTable cellValue = cellData.getValue();
+            SimpleBooleanProperty property = cellValue.getIsSelected();
+            property.addListener((observable, oldValue, newValue) ->
+                    cellValue.setIsSelected(new SimpleBooleanProperty(newValue)));
+            return property;
+        });
+        anyFormTable.setEditable(true);
     }
 
     private void initializeTreeBoxCells() {

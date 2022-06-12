@@ -33,29 +33,46 @@
                                           <content>
                                             <AnchorPane minHeight="0.0" minWidth="0.0">
                                                    <children>
-                                                      <TableView fx:id="singleFirstFormTable" prefHeight="548.0" prefWidth="788.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                        <columns>
-                                                          <TableColumn fx:id="singleFirstFormResult" prefWidth="140.0" text="Linguistic Summary" />
-                                                          <TableColumn fx:id="singleFirstFormT1" prefWidth="42.0" text="T1" />
-                                                            <TableColumn fx:id="singleFirstFormT2" prefWidth="42.0" text="T2" />
-                                                            <TableColumn fx:id="singleFirstFormT3" prefWidth="42.0" text="T3" />
-                                                            <TableColumn fx:id="singleFirstFormT4" prefWidth="42.0" text="T4" />
-                                                            <TableColumn fx:id="singleFirstFormT5" prefWidth="42.0" text="T5" />
-                                                            <TableColumn fx:id="singleFirstFormT6" prefWidth="42.0" text="T6" />
-                                                            <TableColumn fx:id="singleFirstFormT7" prefWidth="42.0" text="T7" />
-                                                            <TableColumn fx:id="singleFirstFormT8" prefWidth="42.0" text="T8" />
-                                                            <TableColumn fx:id="singleFirstFormT9" prefWidth="42.0" text="T9" />
-                                                            <TableColumn fx:id="singleFirstFormT10" prefWidth="42.0" text="T10" />
-                                                            <TableColumn fx:id="singleFirstFormT11" prefWidth="42.0" text="T11" />
-                                                            <TableColumn fx:id="singleFirstFormOptimum" prefWidth="42.0" text="Optimum" />
+                                                      <TableView fx:id="singleFormTable" prefHeight="548.0" prefWidth="788.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                          <columns>
+                                                              <TableColumn fx:id="singleFormResult" minWidth="140.0" prefWidth="140.0" text="Linguistic Summary" />
+                                                            <TableColumn fx:id="singleFormT1" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T1" />
+                                                            <TableColumn fx:id="singleFormT2" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T2" />
+                                                            <TableColumn fx:id="singleFormT3" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T3" />
+                                                            <TableColumn fx:id="singleFormT4" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T4" />
+                                                            <TableColumn fx:id="singleFormT5" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T5" />
+                                                            <TableColumn fx:id="singleFormT6" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T6" />
+                                                            <TableColumn fx:id="singleFormT7" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T7" />
+                                                            <TableColumn fx:id="singleFormT8" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T8" />
+                                                            <TableColumn fx:id="singleFormT9" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T9" />
+                                                            <TableColumn fx:id="singleFormT10" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T10" />
+                                                            <TableColumn fx:id="singleFormT11" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T11" />
+                                                            <TableColumn fx:id="singleFormOptimum" maxWidth="64.0" minWidth="64.0" prefWidth="64.0" text="Optimum" />
+                                                            <TableColumn fx:id="singleFormTableCheckBox" maxWidth="64.0" minWidth="64.0" prefWidth="64.0" text="Select" />
                                                         </columns>
+                                                         <columnResizePolicy>
+                                                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                         </columnResizePolicy>
                                                       </TableView>
                                                    </children></AnchorPane>
                                           </content>
                                         </Tab>
                                         <Tab text="Multi-subject summaries">
                                           <content>
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                       <TableView fx:id="multiFormTable" prefHeight="548.0" prefWidth="788.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                           <columns>
+                                                               <TableColumn fx:id="multiFormResult" minWidth="140.0" prefWidth="140.0" text="Linguistic Summary" />
+                                                               <TableColumn fx:id="multiFormT" maxWidth="42.0" minWidth="42.0" prefWidth="42.0" text="T1" />
+                                                               <TableColumn fx:id="multiFormTableCheckBox" maxWidth="64.0" minWidth="64.0" prefWidth="64.0" text="Select" />
+                                                           </columns>
+                                                           <columnResizePolicy>
+                                                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                           </columnResizePolicy>
+                                                       </TableView>
+                                                   </children>
+                                            </AnchorPane>
                                           </content>
                                         </Tab>
                                       </tabs>
