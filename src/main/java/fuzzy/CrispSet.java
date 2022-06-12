@@ -6,6 +6,7 @@ import model.HotelBookingRepository;
 import model.StringVariable;
 import org.apache.commons.text.WordUtils;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -30,14 +31,20 @@ public class CrispSet implements SetOperations<CrispSet> {
             builder.setCharAt(index+1,Character.toUpperCase(filterValue1.charAt(index+1)));
             filterValue1 = builder.toString();
         }
+        String tempFilter = filterValue;
+        if(variable!=StringVariable.countryCode) {
+            tempFilter=tempFilter.toUpperCase(Locale.ROOT).replace(" ","_").replace("-","_");
+        }
         this.filterValue = filterValue1;
         this.entries = new TreeMap<>();
+        System.out.println(filterValue1);
+        System.out.println(variable);
         if (variable==StringVariable.countryCode && CountryCode.findByName(filterValue).isEmpty()) {
             throw new IllegalArgumentException("No such country found");
         }
         HotelBookingRepository HBR = HotelBookingRepository.getInstance();
         for (int i = HotelBookingRepository.MIN_INDEX_DATABASE; i <= HotelBookingRepository.MAX_INDEX_DATABASE; i++) {
-            entries.put(i, HBR.getBooking(i).getStringVariable(variable).equals(filterValue1));
+            entries.put(i, HBR.getBooking(i).getStringVariable(variable).equals(tempFilter));
         }
     }
 
