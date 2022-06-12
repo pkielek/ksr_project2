@@ -1,7 +1,8 @@
 package gui;
 
+import com.google.common.collect.Sets;
 import fuzzy.*;
-import fuzzy.summaries.SummaryResult;
+import fuzzy.summaries.*;
 import gui.helpers.MultiSummaryTable;
 import gui.helpers.SingleSummaryTable;
 import javafx.animation.KeyFrame;
@@ -23,13 +24,15 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import model.NumericVariable;
 import model.StringVariable;
+import org.paukov.combinatorics3.Generator;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class MainView {
 
@@ -274,11 +277,11 @@ public class MainView {
 
 
         HashMap<String,Double> weights2 = new HashMap<>();
-        weights2.put("t",0.1);
+        weights2.put("T",0.1);
         MultiSummaryTable sst12 = new MultiSummaryTable(new SummaryResult("raz",weights2));
-        weights2.put("t",0.2);
+        weights2.put("T",0.2);
         MultiSummaryTable sst22 = new MultiSummaryTable(new SummaryResult("dwa",weights2));
-        weights2.put("t",0.001);
+        weights2.put("T",0.001);
         MultiSummaryTable sst32 = new MultiSummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights2));
         multiSummaryObservableList.addAll(sst12, sst22, sst32);
 
@@ -309,7 +312,7 @@ public class MainView {
 
         multiFormTableCheckBox.setCellFactory(cellData -> new CheckBoxTableCell<>());
         multiFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
-        multiFormT.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t"));
+        multiFormT.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("T"));
         multiFormTableCheckBox.setCellValueFactory(cellData -> {
             MultiSummaryTable cellValue = cellData.getValue();
             SimpleBooleanProperty property = cellValue.getIsSelected();
@@ -324,7 +327,7 @@ public class MainView {
     private void rebuildTree() {
         treeViewCheckBox.setRoot(null);
         CheckBoxTreeItem<String> treeRoot = new CheckBoxTreeItem<>("Summary options");
-
+        treeRoot.setExpanded(true);
         CheckBoxTreeItem<String> relativeQuantifier = new CheckBoxTreeItem<>("Relative Quantifier");
         CheckBoxTreeItem<String> absoluteQuantifier = new CheckBoxTreeItem<>("Absolute Quantifier");
         CheckBoxTreeItem<String> summarizer = new CheckBoxTreeItem<>("Summarizers");
@@ -334,10 +337,10 @@ public class MainView {
             if (!variable.name().equals(NumericVariable.undefined.name())) {
                 if (variable.name().equals(NumericVariable.relativeQuantifier.name())) {
                     LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
-                            relativeQuantifier.getChildren().add(new CheckBoxTreeItem<>(k+" "+variable.getSummarizerTitle())));
+                            relativeQuantifier.getChildren().add(new CheckBoxTreeItem<>(k)));
                 } else if (variable.name().equals(NumericVariable.absoluteQuantifier.name())) {
                     LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
-                            absoluteQuantifier.getChildren().add(new CheckBoxTreeItem<>(k+" "+variable.getSummarizerTitle())));
+                            absoluteQuantifier.getChildren().add(new CheckBoxTreeItem<>(k)));
                 } else {
                     CheckBoxTreeItem<String> newCheckBox = new CheckBoxTreeItem<>(variable.getName());
                     LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
@@ -657,10 +660,10 @@ public class MainView {
 
     @FXML
     public void generateSummaries() {
-        HashSet<String> relativeQuantifierLabels = new HashSet<>();
+         HashSet<String> relativeQuantifierLabels = new HashSet<>();
         HashSet<String> absoluteQuantifierLabels = new HashSet<>();
-        HashMap<NumericVariable,HashSet<String>> summarizerLabels  = new HashMap<>();
-        HashMap<NumericVariable,HashSet<String>> qualifierLabels = new HashMap<>();
+        TreeMap<NumericVariable,TreeSet<String>> summarizerLabels  = new TreeMap<>();
+        TreeMap<NumericVariable,TreeSet<String>> qualifierLabels = new TreeMap<>();
         CheckBoxTreeItem currentTreeItem;
         CheckBoxTreeItem currentInnerTreeItem;
         CheckBoxTreeItem currentInnerInnerTreeItem;
@@ -678,7 +681,7 @@ public class MainView {
                         }
                     } else if(currentInnerTreeItem.isSelected()||currentInnerTreeItem.isIndeterminate()) {
                         NumericVariable variable = NumericVariable.findByName(currentInnerTreeItem.getValue().toString());
-                        HashSet<String> labels = new HashSet<>();
+                        TreeSet<String> labels = new TreeSet<>();
                         for(int k=0;k<currentInnerTreeItem.getChildren().size();k++) {
                             currentInnerInnerTreeItem = (CheckBoxTreeItem) currentInnerTreeItem.getChildren().get(k);
                             if(currentInnerInnerTreeItem.isSelected()) {
@@ -695,5 +698,212 @@ public class MainView {
                 }
             }
         }
+        try {
+            if(subject2==null&&relativeQuantifierLabels.isEmpty()&&absoluteQuantifierLabels.isEmpty()) {
+                throw new IllegalArgumentException("Single subject summaries must have at least one quantifier");
+            }
+            if(summarizerLabels.isEmpty()) {
+                throw new IllegalArgumentException("Summaries must have at least one summarizer");
+            }
+        } catch(IllegalArgumentException ex) {
+            Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e-> {
+                summaryErrorLabel.setText(ex.getMessage());
+            }),new KeyFrame(Duration.seconds(3.0), e-> {
+                summaryErrorLabel.setText("");
+            }));
+            timeline.playFromStart();
+        }
+        if(subject2==null) {
+            //Single subject all forms summarizers
+            for(int i=1;i<=summarizerLabels.size();i++) {
+                System.out.println(i);
+                Generator.combination(summarizerLabels.keySet()).simple(i).stream().forEach((summarizerCombination) -> {
+                    System.out.println(summarizerCombination);
+                    TreeSet<NumericVariable> filteredQualifiers = new TreeSet<>();
+                    qualifierLabels.forEach((k,v) -> {
+                        if(!summarizerCombination.contains(k)) {
+                            filteredQualifiers.add(k);
+                            System.out.println(k);
+                        }
+                    });
+                    ArrayList<TreeSet<String>> summarizersLabelsList = new ArrayList<>();
+                    for (NumericVariable set : summarizerCombination) {
+                        summarizersLabelsList.add(summarizerLabels.get(set));
+                    }
+                    Sets.cartesianProduct(summarizersLabelsList).forEach((summarizerFinalSet) -> {
+                        TreeMap<String,String> summarizerFinalMap = new TreeMap<>();
+                        for(int j=0;j<summarizerFinalSet.size();j++) {
+                            NumericVariable summarizerVariable = summarizerCombination.get(j);
+                            String qualifierVariableString = summarizerFinalSet.get(j).replace(summarizerVariable.getSummarizerTitle()+" ","").replace(" "+summarizerVariable.getSummarizerTitle(),"");
+                            summarizerFinalMap.put(summarizerVariable.toString(), qualifierVariableString);
+
+                        }
+                        relativeQuantifierLabels.forEach((relativeQuantifierLabel) -> {
+                            singleSummaryObservableList.add(new SingleSummaryTable(new FirstFormSingleSummary(subject1==null?null:new CrispSet(currentStringVariable,subject1),
+                                    true,relativeQuantifierLabel,summarizerFinalMap).retrieveResults()));
+                        });
+                        absoluteQuantifierLabels.forEach((absoluteQuantifierLabel) -> {
+                            singleSummaryObservableList.add(new SingleSummaryTable(new FirstFormSingleSummary(subject1==null?null:new CrispSet(currentStringVariable,subject1),
+                                    false,absoluteQuantifierLabel,summarizerFinalMap).retrieveResults()));
+                        });
+                        for(int j=1;j<=filteredQualifiers.size();j++) {
+                            Generator.combination(filteredQualifiers).simple(j).forEach((qualifierCombination) -> {
+                                ArrayList<TreeSet<String>> qualifiersLabelsList = new ArrayList<>();
+                                for (NumericVariable set : qualifierCombination) {
+                                    qualifiersLabelsList.add(qualifierLabels.get(set));
+                                }
+                                Sets.cartesianProduct(qualifiersLabelsList).forEach((qualifierFinalSet) -> {
+                                    TreeMap<String,String> qualifierFinalMap = new TreeMap<>();
+                                    for(int k=0;k<qualifierFinalSet.size();k++) {
+                                        NumericVariable qualifierVariable = qualifierCombination.get(k);
+                                        String qualifierVariableString = qualifierFinalSet.get(k).replace(qualifierVariable.getSummarizerTitle()+" ","").replace(" "+qualifierVariable.getSummarizerTitle(),"");
+                                        qualifierFinalMap.put(qualifierVariable.toString(), qualifierVariableString);
+                                    }
+                                    relativeQuantifierLabels.forEach((relativeQuantifierLabel) -> {
+                                        singleSummaryObservableList.add(new SingleSummaryTable(new SecondFormSingleSummary(subject1==null?null:new CrispSet(currentStringVariable,subject1),
+                                                relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
+                                    });
+                                });
+                            });
+                        }
+                    });
+                });
+            }
+        } else {
+            for(int i=1;i<=summarizerLabels.size();i++) {
+                Generator.combination(summarizerLabels.keySet()).simple(i).stream().forEach((summarizerCombination) -> {
+                    System.out.println(summarizerCombination);
+                    TreeSet<NumericVariable> filteredQualifiers = new TreeSet<>();
+                    qualifierLabels.forEach((k,v) -> {
+                        if(!summarizerCombination.contains(k)) {
+                            filteredQualifiers.add(k);
+                        }
+                    });
+                    ArrayList<TreeSet<String>> summarizersLabelsList = new ArrayList<>();
+                    for (NumericVariable set : summarizerCombination) {
+                        summarizersLabelsList.add(summarizerLabels.get(set));
+                    }
+                    Sets.cartesianProduct(summarizersLabelsList).forEach((summarizerFinalSet) -> {
+                        TreeMap<String,String> summarizerFinalMap = new TreeMap<>();
+                        for(int j=0;j<summarizerFinalSet.size();j++) {
+                            NumericVariable summarizerVariable = summarizerCombination.get(j);
+                            String qualifierVariableString = summarizerFinalSet.get(j).replace(summarizerVariable.getSummarizerTitle()+" ","").replace(" "+summarizerVariable.getSummarizerTitle(),"");
+                            summarizerFinalMap.put(summarizerVariable.toString(), qualifierVariableString);
+
+                        }
+                        multiSummaryObservableList.add(new MultiSummaryTable(new FourthFormMultiSummary(new CrispSet(currentStringVariable,subject1),
+                                new CrispSet(currentStringVariable,subject2),summarizerFinalMap).retrieveResults()));
+                        relativeQuantifierLabels.forEach((relativeQuantifierLabel) -> {
+                            multiSummaryObservableList.add(new MultiSummaryTable(new FirstFormMultiSummary(new CrispSet(currentStringVariable,subject1),
+                                    new CrispSet(currentStringVariable,subject2),relativeQuantifierLabel,summarizerFinalMap).retrieveResults()));
+                            multiSummaryObservableList.add(new MultiSummaryTable(new FirstFormMultiSummary(new CrispSet(currentStringVariable,subject2),
+                                    new CrispSet(currentStringVariable,subject1),relativeQuantifierLabel,summarizerFinalMap).retrieveResults()));
+                        });
+                        for(int j=1;j<=filteredQualifiers.size();j++) {
+                            Generator.combination(filteredQualifiers).simple(j).forEach((qualifierCombination) -> {
+                                ArrayList<TreeSet<String>> qualifiersLabelsList = new ArrayList<>();
+                                for (NumericVariable set : qualifierCombination) {
+                                    qualifiersLabelsList.add(qualifierLabels.get(set));
+                                }
+                                Sets.cartesianProduct(qualifiersLabelsList).forEach((qualifierFinalSet) -> {
+                                    TreeMap<String,String> qualifierFinalMap = new TreeMap<>();
+                                    for(int k=0;k<qualifierFinalSet.size();k++) {
+                                        NumericVariable qualifierVariable = qualifierCombination.get(k);
+                                        String qualifierVariableString = qualifierFinalSet.get(k).replace(qualifierVariable.getSummarizerTitle()+" ","").replace(" "+qualifierVariable.getSummarizerTitle(),"");
+                                        qualifierFinalMap.put(qualifierVariable.toString(), qualifierVariableString);
+                                    }
+                                    relativeQuantifierLabels.forEach((relativeQuantifierLabel) -> {
+                                        multiSummaryObservableList.add(new MultiSummaryTable(new SecondFormMultiSummary(new CrispSet(currentStringVariable,subject1),
+                                                new CrispSet(currentStringVariable,subject2),relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
+                                        multiSummaryObservableList.add(new MultiSummaryTable(new SecondFormMultiSummary(new CrispSet(currentStringVariable,subject2),
+                                                new CrispSet(currentStringVariable,subject1),relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
+                                        multiSummaryObservableList.add(new MultiSummaryTable(new ThirdFormMultiSummary(new CrispSet(currentStringVariable,subject1),
+                                                new CrispSet(currentStringVariable,subject2),relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
+                                        multiSummaryObservableList.add(new MultiSummaryTable(new ThirdFormMultiSummary(new CrispSet(currentStringVariable,subject2),
+                                                new CrispSet(currentStringVariable,subject1),relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
+                                    });
+                                });
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    }
+
+    @FXML
+    public void removeAll() {
+        singleSummaryObservableList.clear();
+        multiSummaryObservableList.clear();
+    }
+
+    @FXML
+    public void removeSelected() {
+        singleSummaryObservableList.removeIf((k)->k.getIsSelected().get());
+        multiSummaryObservableList.removeIf((k)->k.getIsSelected().get());
+    }
+
+    @FXML
+    public void saveAll() throws IOException {
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("SingleSubjectResults-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis())+ ".csv"), StandardCharsets.UTF_8));
+        bw.write("Linguistic Summary,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,Optimum");
+        bw.newLine();
+        for (SingleSummaryTable table : singleSummaryObservableList) {
+            bw.write(table.toCsvLine());
+            bw.newLine();
+        }
+        bw.flush();
+        bw.close();
+        bw=new BufferedWriter(new OutputStreamWriter(new FileOutputStream("MultiSubjectResults-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis())+ ".csv"), StandardCharsets.UTF_8));
+        bw.write("Linguistic Summary,T");
+        bw.newLine();
+        for (MultiSummaryTable table : multiSummaryObservableList) {
+            bw.write(table.toCsvLine());
+            bw.newLine();
+        }
+        bw.flush();
+        bw.close();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e-> {
+            summaryErrorLabel.setTextFill(Color.color(0,1,0));
+            summaryErrorLabel.setText("Summaries saved succesfully");
+        }),new KeyFrame(Duration.seconds(3.0), e-> {
+            summaryErrorLabel.setTextFill(Color.color(1,0,0));
+            summaryErrorLabel.setText("");
+        }));
+        timeline.playFromStart();
+    }
+
+    @FXML
+    public void saveSelected() throws IOException {
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("SingleSubjectResults-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis())+ ".csv"), StandardCharsets.UTF_8));
+        bw.write("Linguistic Summary,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,Optimum");
+        bw.newLine();
+        for (SingleSummaryTable table : singleSummaryObservableList) {
+            if(table.getIsSelected().get()) {
+                bw.write(table.toCsvLine());
+                bw.newLine();
+            }
+        }
+        bw.flush();
+        bw.close();
+        bw=new BufferedWriter(new OutputStreamWriter(new FileOutputStream("MultiSubjectResults-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(System.currentTimeMillis())+ ".csv"), StandardCharsets.UTF_8));
+        bw.write("Linguistic Summary,T");
+        bw.newLine();
+        for (MultiSummaryTable table : multiSummaryObservableList) {
+            if(table.getIsSelected().get()) {
+                bw.write(table.toCsvLine());
+                bw.newLine();
+            }
+        }
+        bw.flush();
+        bw.close();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e-> {
+            summaryErrorLabel.setTextFill(Color.color(0,1,0));
+            summaryErrorLabel.setText("Summaries saved succesfully");
+        }),new KeyFrame(Duration.seconds(3.0), e-> {
+            summaryErrorLabel.setTextFill(Color.color(1,0,0));
+            summaryErrorLabel.setText("");
+        }));
+        timeline.playFromStart();
     }
 }

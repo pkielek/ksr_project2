@@ -1,5 +1,6 @@
 package gui;
 
+import com.google.common.collect.Sets;
 import fuzzy.CrispSet;
 import fuzzy.LinguisticVariableRepository;
 import fuzzy.summaries.FirstFormMultiSummary;
