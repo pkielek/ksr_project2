@@ -46,9 +46,6 @@ public class HotelBooking {
             case leadTime -> {
                 return Double.valueOf(leadTime);
             }
-//            case arrivalDateWeekNumber -> {
-//                return Double.valueOf(arrivalDateWeekNumber);
-//            }
             case arrivalDateDayOfMonth -> {
                 return Double.valueOf(arrivalDateDayOfMonth);
             }
