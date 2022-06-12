@@ -5,6 +5,7 @@ import fuzzy.LinguisticVariableRepository;
 import fuzzy.summaries.FirstFormMultiSummary;
 import fuzzy.summaries.SecondFormMultiSummary;
 import fuzzy.summaries.SummaryResult;
+import fuzzy.summaries.ThirdFormMultiSummary;
 import gui.helpers.Observer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -36,11 +37,29 @@ public class MainApp extends Application implements EventHandler<ActionEvent> {
 //                new TreeMap<>(Map.of(NumericVariable.leadTime.toString(),"very long")));
 //        new FirstFormMultiSummary(new CrispSet(StringVariable.hotel,"RESORT_HOTEL"),new CrispSet(StringVariable.hotel,"CITY_HOTEL"),"half of",
 //                new TreeMap<>(Map.of(NumericVariable.leadTime.toString(),"very long")));
-
         launch();
+
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Spain"),new CrispSet(StringVariable.countryCode, "United Kingdom"),"all", new TreeMap<>(Map.of("requiredCarParkingSpaces","little")), new TreeMap<>(Map.of("numberOfAdults", "a few"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Germany"),new CrispSet(StringVariable.countryCode, "Portugal"),"all", new TreeMap<>(Map.of("leadTime","very short")), new TreeMap<>(Map.of("numberOfAdults", "a few"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Portugal"),new CrispSet(StringVariable.countryCode, "United Kingdom"),"hardly any", new TreeMap<>(Map.of("staysInWeekNights", "short")), new TreeMap<>(Map.of("numberOfAdults", "little"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Spain"),new CrispSet(StringVariable.countryCode, "Portugal"),"half of", new TreeMap<>(Map.of("requiredCarParkingSpaces","few")), new TreeMap<>(Map.of("numberOfAdults", "a few"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Spain"),new CrispSet(StringVariable.countryCode, "United Kingdom"),"some", new TreeMap<>(Map.of("staysInWeekNights","very long")), new TreeMap<>(Map.of("numberOfAdults", "a few"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Germany"),new CrispSet(StringVariable.countryCode, "Portugal"),"some", new TreeMap<>(Map.of("totalOfSpecialRequests","none of")), new TreeMap<>(Map.of("staysInWeekNights", "none of"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Germany"),new CrispSet(StringVariable.countryCode, "United Kingdom"),"hardly any", new TreeMap<>(Map.of("totalOfSpecialRequests","none of")), new TreeMap<>(Map.of("staysInWeekNights", "short"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Spain"),new CrispSet(StringVariable.countryCode, "Germany"),"some", new TreeMap<>(Map.of("staysInWeekNights", "very short")), new TreeMap<>(Map.of("leadTime","short"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Portugal"),new CrispSet(StringVariable.countryCode, "United Kingdom"),"a lot of", new TreeMap<>(Map.of("staysInWeekNights", "short")), new TreeMap<>(Map.of("leadTime","very long"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Spain"),new CrispSet(StringVariable.countryCode, "Portugal"),"half of", new TreeMap<>(Map.of("staysInWeekNights", "none of")), new TreeMap<>(Map.of("leadTime","very short"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Germany"),new CrispSet(StringVariable.countryCode, "United Kingdom"),"a lot of", new TreeMap<>(Map.of("bookingChanges", "many")), new TreeMap<>(Map.of("numberOfAdults","little"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Germany"),new CrispSet(StringVariable.countryCode, "Portugal"),"half of", new TreeMap<>(Map.of("staysInWeekNights", "long")), new TreeMap<>(Map.of("numberOfAdults","little"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Spain"),new CrispSet(StringVariable.countryCode, "United Kingdom"),"a lot of", new TreeMap<>(Map.of("staysInWeekNights", "short")), new TreeMap<>(Map.of("numberOfAdults","little"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Portugal"),new CrispSet(StringVariable.countryCode, "United Kingdom"),"hardly any", new TreeMap<>(Map.of("requiredCarParkingSpaces","none of")), new TreeMap<>(Map.of("staysInWeekNights", "long"))));
+//        generate_multi(new ThirdFormMultiSummary(new CrispSet(StringVariable.countryCode,"Spain"),new CrispSet(StringVariable.countryCode, "Germany"),"hardly any", new TreeMap<>(Map.of("bookingChanges","none of")), new TreeMap<>(Map.of("requiredCarParkingSpaces", "many"))));
+}
+
+    private static void generate_multi(ThirdFormMultiSummary xd) {
+        System.out.println(xd.getSummary());
+        System.out.println(xd.getT());
     }
-
-
 
     @Override
     public void start(Stage stage) throws IOException {

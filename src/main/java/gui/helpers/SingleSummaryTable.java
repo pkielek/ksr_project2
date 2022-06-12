@@ -1,6 +1,7 @@
 package gui.helpers;
 
 import fuzzy.summaries.SummaryResult;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 public class SingleSummaryTable {
     private SimpleStringProperty resultSummary;
     private HashMap<String,SimpleStringProperty> stringProperties;
+    private SimpleBooleanProperty isSelected = new SimpleBooleanProperty(false);
 
     public SingleSummaryTable(SummaryResult summaryResult) {
         stringProperties = new HashMap<>();
