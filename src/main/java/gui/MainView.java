@@ -1,6 +1,7 @@
 package gui;
 
 import fuzzy.*;
+import fuzzy.summaries.SummaryResult;
 import gui.helpers.SingleSummaryTable;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -18,9 +19,12 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import model.NumericVariable;
+import model.StringVariable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
@@ -94,10 +98,6 @@ public class MainView {
     @FXML
     LineChart<Number, Number> membershipFunctionChart;
     @FXML
-    NumberAxis xAxis;
-    @FXML
-    NumberAxis yAxis;
-    @FXML
     Button saveLabel;
     @FXML
     Button removeLabel;
@@ -115,14 +115,24 @@ public class MainView {
     HBox functionHBox4;
     @FXML
     Label errorLabel;
+    @FXML
+    Label summaryErrorLabel;
+    @FXML
+    MenuButton firstSubjectSelect;
+    @FXML
+    MenuButton secondSubjectSelect;
 
+    StringVariable currentStringVariable;
+    String subject1;
+    String subject2;
+
+    ObservableList<SingleSummaryTable> singleSummaryObservableList = FXCollections.observableArrayList();
 
     LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
 
     HashMap<String, Double> weights;
     HashMap<String,TextField> textFields;
 
-    ObservableList<SingleSummaryTable> singleSummaryObservableList = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
@@ -135,54 +145,133 @@ public class MainView {
         initializeWeights();
         initializeAdvanced();
         initializeMembershipSelects();
-        initializeTreeBoxCells();
+        rebuildTree();
+        initializeSubjects();
         initializeTable();
+    }
+
+    private void initializeSubjects() {
+        firstSubjectSelect.setText("All reservations");
+        currentStringVariable=null;
+        subject1=null;
+        subject2=null;
+        MenuItem item = new MenuItem("All reservations");
+
+        item.setOnAction(actionEvent -> {
+            firstSubjectSelect.setText("All reservations");
+            secondSubjectSelect.setDisable(true);
+            secondSubjectSelect.getItems().clear();
+            secondSubjectSelect.setText("---Select second subject---");
+            currentStringVariable=null;
+            subject1=null;
+            subject2=null;
+        });
+        ArrayList<String> subjects = new ArrayList<>();
+        subjects.add("Portugal");
+        subjects.add("United Kingdom");
+        subjects.add("France");
+        subjects.add("Spain");
+        subjects.add("Germany");
+        firstSubjectSelect.getItems().add(item);
+        firstSubjectSelectInitialize(subjects,"Country",StringVariable.countryCode);
+        subjects = new ArrayList<>();
+        subjects.add("Resort Hotel");
+        subjects.add("City Hotel");
+        firstSubjectSelectInitialize(subjects,"Hotel",StringVariable.hotel);
+        subjects = new ArrayList<>();
+        subjects.add("Check-Out");
+        subjects.add("Canceled");
+        subjects.add("No-Show");
+        firstSubjectSelectInitialize(subjects,"Reservation status",StringVariable.status);
+        subjects = new ArrayList<>();
+        subjects.add("Transient");
+        subjects.add("Transient-Party");
+        subjects.add("Contract");
+        subjects.add("Group");
+        firstSubjectSelectInitialize(subjects,"Customer type",StringVariable.customerType);
+    }
+
+    private void firstSubjectSelectInitialize(ArrayList<String> names, String header, StringVariable variable) {
+        MenuItem item;
+        item = new MenuItem("---"+header+"---");
+        item.setDisable(true);
+        firstSubjectSelect.getItems().add(item);
+        for(String name : names) {
+            item = new MenuItem(name);
+            item.setOnAction(actionEvent -> {
+                secondSubjectSelect.getItems().clear();
+                firstSubjectSelect.setText(name);
+                secondSubjectSelect.setDisable(false);
+                currentStringVariable = variable;
+                subject1 = name;
+                subject2 = null;
+                secondSubjectSelect.setText("No second subject");
+                MenuItem noSecondSubjectItem = new MenuItem("No second subject");
+                noSecondSubjectItem.setOnAction(actionEvent2 -> {
+                    subject2=null;
+                    secondSubjectSelect.setText("No second subject");
+                });
+                secondSubjectSelect.getItems().add(noSecondSubjectItem);
+                for(String name2: names) {
+                    if(!name.equals(name2)) {
+                        MenuItem item2 = new MenuItem(name2);
+                        item2.setOnAction(actionEvent1 -> {
+                            subject2 = name2;
+                            secondSubjectSelect.setText(name2);
+                        ;});
+                        secondSubjectSelect.getItems().add(item2);
+                    }
+                }
+            });
+            firstSubjectSelect.getItems().add(item);
+        }
     }
 
     private void initializeTable() {
         singleFirstFormTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        SingleSummaryTable sst1 = new SingleSummaryTable("raz", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
-        SingleSummaryTable sst2 = new SingleSummaryTable("dwa", "0.2", "0.2", "0.2", "0.2", "0.2", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
-        SingleSummaryTable sst3 = new SingleSummaryTable("trzy", "0.3", "0.3", "0.3", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
+        HashMap<String,Double> weights = new HashMap<String,Double>();
+        weights.put("t1",0.1);
+        weights.put("t2",0.2);
+        weights.put("t3",0.3);
+        weights.put("t4",0.4);
+        weights.put("t5",0.5);
+        weights.put("t6",0.6);
+        weights.put("t7",0.7);
+        weights.put("t8",0.8);
+        weights.put("t9",0.9);
+        weights.put("t10",0.0);
+        weights.put("t11",0.0);
+        weights.put("Optimum",0.5);
+        SingleSummaryTable sst1 = new SingleSummaryTable(new SummaryResult("raz",weights));
+        SingleSummaryTable sst2 = new SingleSummaryTable(new SummaryResult("dwa",weights));
+        SingleSummaryTable sst3 = new SingleSummaryTable(new SummaryResult("trzy",weights));
         singleSummaryObservableList.addAll(sst1, sst2, sst3);
 
         singleFirstFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
-        singleFirstFormT1.setCellValueFactory(cellData -> cellData.getValue().getT1());
-        singleFirstFormT2.setCellValueFactory(cellData -> cellData.getValue().getT2());
-        singleFirstFormT3.setCellValueFactory(cellData -> cellData.getValue().getT3());
-        singleFirstFormT4.setCellValueFactory(cellData -> cellData.getValue().getT4());
-        singleFirstFormT5.setCellValueFactory(cellData -> cellData.getValue().getT5());
-        singleFirstFormT6.setCellValueFactory(cellData -> cellData.getValue().getT6());
-        singleFirstFormT7.setCellValueFactory(cellData -> cellData.getValue().getT7());
-        singleFirstFormT8.setCellValueFactory(cellData -> cellData.getValue().getT8());
-        singleFirstFormT9.setCellValueFactory(cellData -> cellData.getValue().getT9());
-        singleFirstFormT10.setCellValueFactory(cellData -> cellData.getValue().getT10());
-        singleFirstFormT11.setCellValueFactory(cellData -> cellData.getValue().getT11());
-        singleFirstFormOptimum.setCellValueFactory(cellData -> cellData.getValue().getOptimum());
-        singleFirstFormTable.getItems().addAll(sst1, sst2, sst3);
+        singleFirstFormT1.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t1"));
+        singleFirstFormT2.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t2"));
+        singleFirstFormT3.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t3"));
+        singleFirstFormT4.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t4"));
+        singleFirstFormT5.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t5"));
+        singleFirstFormT6.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t6"));
+        singleFirstFormT7.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t7"));
+        singleFirstFormT8.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t8"));
+        singleFirstFormT9.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t9"));
+        singleFirstFormT10.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t10"));
+        singleFirstFormT11.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t11"));
+        singleFirstFormOptimum.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("Optimum"));
         singleFirstFormTable.setItems(singleSummaryObservableList);
 
     }
 
-    private void initializeTreeBoxCells() {
-        CheckBoxTreeItem<String> treeRoot = new CheckBoxTreeItem<>("Database");
+    private void rebuildTree() {
+        treeViewCheckBox.setRoot(null);
+        CheckBoxTreeItem<String> treeRoot = new CheckBoxTreeItem<>("Summary options");
 
-        CheckBoxTreeItem<String> subject1 = new CheckBoxTreeItem<>("Subject 1");
-        CheckBoxTreeItem<String> subject2 = new CheckBoxTreeItem<>("Subject 2");
         CheckBoxTreeItem<String> relativeQuantifier = new CheckBoxTreeItem<>("Relative Quantifier");
         CheckBoxTreeItem<String> absoluteQuantifier = new CheckBoxTreeItem<>("Absolute Quantifier");
         CheckBoxTreeItem<String> summarizer = new CheckBoxTreeItem<>("Summarizers");
         CheckBoxTreeItem<String> qualifier = new CheckBoxTreeItem<>("Qualifiers");
-
-        subject1.getChildren().addAll(new CheckBoxTreeItem<>("Portugal"),
-                new CheckBoxTreeItem<>("United Kingdom"),
-                new CheckBoxTreeItem<>("Germany"),
-                new CheckBoxTreeItem<>("Spain"));
-
-        subject2.getChildren().addAll(new CheckBoxTreeItem<>("Portugal"),
-                new CheckBoxTreeItem<>("United Kingdom"),
-                new CheckBoxTreeItem<>("Germany"),
-                new CheckBoxTreeItem<>("Spain"));
 
         for (NumericVariable variable : NumericVariable.values()) {
             if (!variable.name().equals(NumericVariable.undefined.name())) {
@@ -193,15 +282,18 @@ public class MainView {
                     LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
                             absoluteQuantifier.getChildren().add(new CheckBoxTreeItem<>(k+" "+variable.getSummarizerTitle())));
                 } else {
-                    CheckBoxTreeItem<String> newCheckBox = new CheckBoxTreeItem<>(variable.getSummarizerTitle());
+                    CheckBoxTreeItem<String> newCheckBox = new CheckBoxTreeItem<>(variable.getName());
                     LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
-                            newCheckBox.getChildren().add(new CheckBoxTreeItem<>(k+" "+variable.getSummarizerTitle())));
+                            newCheckBox.getChildren().add(new CheckBoxTreeItem<>(variable.getTitleBeforeLabel()? variable.getSummarizerTitle()+" "+k:k+" "+variable.getSummarizerTitle())));
+                    CheckBoxTreeItem<String> newCheckBox2 = new CheckBoxTreeItem<>(variable.getName());
+                    LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
+                            newCheckBox2.getChildren().add(new CheckBoxTreeItem<>(variable.getTitleBeforeLabel()? variable.getSummarizerTitle()+" "+k:k+" "+variable.getSummarizerTitle())));
                     summarizer.getChildren().add(newCheckBox);
-                    qualifier.getChildren().add(newCheckBox);
+                    qualifier.getChildren().add(newCheckBox2);
                 }
             }
         }
-        treeRoot.getChildren().addAll(subject1, subject2, relativeQuantifier, absoluteQuantifier, summarizer, qualifier);
+        treeRoot.getChildren().addAll(relativeQuantifier, absoluteQuantifier, summarizer, qualifier);
         treeViewCheckBox.setRoot(treeRoot);
         treeViewCheckBox.setCellFactory(CheckBoxTreeCell.forTreeView());
     }
@@ -467,6 +559,7 @@ public class MainView {
         if(function!=null) {
             LBR.getVariables().get(variable).getLabels().put(labelNameField.getText(),function);
             LBR.saveVariable(variable);
+            rebuildTree();
         }
         assert variable != null;
         renewLabels(variable);
@@ -489,6 +582,7 @@ public class MainView {
         NumericVariable variable = NumericVariable.findByName(linguisticVariableSelect.getText());
         LBR.getVariables().get(variable).getLabels().remove(labelNameField.getText());
         LBR.saveVariable(variable);
+        rebuildTree();
         assert variable != null;
         renewLabels(variable);
         removeLabel.setDisable(true);
@@ -502,5 +596,47 @@ public class MainView {
             errorLabel.setText("");
         }));
         timeline.playFromStart();
+    }
+
+    @FXML
+    public void generateSummaries() {
+        HashSet<String> relativeQuantifierLabels = new HashSet<>();
+        HashSet<String> absoluteQuantifierLabels = new HashSet<>();
+        HashMap<NumericVariable,HashSet<String>> summarizerLabels  = new HashMap<>();
+        HashMap<NumericVariable,HashSet<String>> qualifierLabels = new HashMap<>();
+        CheckBoxTreeItem currentTreeItem;
+        CheckBoxTreeItem currentInnerTreeItem;
+        CheckBoxTreeItem currentInnerInnerTreeItem;
+
+        for(int i=0;i<treeViewCheckBox.getRoot().getChildren().size();i++) {
+            currentTreeItem = (CheckBoxTreeItem) treeViewCheckBox.getRoot().getChildren().get(i);
+            if(currentTreeItem.isIndeterminate()|| currentTreeItem.isSelected()) {
+                for(int j=0;j<currentTreeItem.getChildren().size();j++) {
+                    currentInnerTreeItem = (CheckBoxTreeItem) currentTreeItem.getChildren().get(j);
+                    if(i<2 && currentInnerTreeItem.isSelected()) {
+                        if(i==0) {
+                            relativeQuantifierLabels.add(currentInnerTreeItem.getValue().toString());
+                        } else {
+                            absoluteQuantifierLabels.add(currentInnerTreeItem.getValue().toString());
+                        }
+                    } else if(currentInnerTreeItem.isSelected()||currentInnerTreeItem.isIndeterminate()) {
+                        NumericVariable variable = NumericVariable.findByName(currentInnerTreeItem.getValue().toString());
+                        HashSet<String> labels = new HashSet<>();
+                        for(int k=0;k<currentInnerTreeItem.getChildren().size();k++) {
+                            currentInnerInnerTreeItem = (CheckBoxTreeItem) currentInnerTreeItem.getChildren().get(k);
+                            if(currentInnerInnerTreeItem.isSelected()) {
+                                labels.add(currentInnerInnerTreeItem.getValue().toString());
+                            }
+                        }
+                        if(i==2) {
+                            summarizerLabels.put(variable,labels);
+                        }
+                        if(i==3) {
+                            qualifierLabels.put(variable,labels);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
