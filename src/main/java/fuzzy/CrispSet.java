@@ -37,7 +37,7 @@ public class CrispSet implements SetOperations<CrispSet> {
         }
         HotelBookingRepository HBR = HotelBookingRepository.getInstance();
         for (int i = HotelBookingRepository.MIN_INDEX_DATABASE; i <= HotelBookingRepository.MAX_INDEX_DATABASE; i++) {
-            entries.put(i, HBR.getBooking(i).getStringVariable(variable).equals(filterValue));
+            entries.put(i, HBR.getBooking(i).getStringVariable(variable).equals(filterValue1));
         }
     }
 
