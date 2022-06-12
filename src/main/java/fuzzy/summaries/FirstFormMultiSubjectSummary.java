@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class FirstFormMultiSummary extends MultiLinguisticSummary {
+public class FirstFormMultiSubjectSummary extends MultiSubjectLinguisticSummary {
 
-    public FirstFormMultiSummary(CrispSet subject, CrispSet secondSubject, String quantifierLabel, TreeMap<String,String> summarizersByVariableAndLabel) {
+    public FirstFormMultiSubjectSummary(CrispSet subject, CrispSet secondSubject, String quantifierLabel, TreeMap<String,String> summarizersByVariableAndLabel) {
 
         setSummarizersByVariableAndLabel(summarizersByVariableAndLabel);
         setSubject(subject);

@@ -743,14 +743,14 @@ public class MainView {
                             summarizerFinalMap.put(summarizerVariable.toString(), qualifierVariableString);
 
                         }
-                        multiSummaryObservableList.add(new MultiSummaryTable(new FourthFormMultiSummary(new CrispSet(currentStringVariable,subject1),
+                        multiSummaryObservableList.add(new MultiSummaryTable(new FourthFormMultiSubjectSummary(new CrispSet(currentStringVariable,subject1),
                                 new CrispSet(currentStringVariable,subject2),summarizerFinalMap).retrieveResults()));
-                        multiSummaryObservableList.add(new MultiSummaryTable(new FourthFormMultiSummary(new CrispSet(currentStringVariable,subject2),
+                        multiSummaryObservableList.add(new MultiSummaryTable(new FourthFormMultiSubjectSummary(new CrispSet(currentStringVariable,subject2),
                                 new CrispSet(currentStringVariable,subject1),summarizerFinalMap).retrieveResults()));
                         relativeQuantifierLabels.forEach((relativeQuantifierLabel) -> {
-                            multiSummaryObservableList.add(new MultiSummaryTable(new FirstFormMultiSummary(new CrispSet(currentStringVariable,subject1),
+                            multiSummaryObservableList.add(new MultiSummaryTable(new FirstFormMultiSubjectSummary(new CrispSet(currentStringVariable,subject1),
                                     new CrispSet(currentStringVariable,subject2),relativeQuantifierLabel,summarizerFinalMap).retrieveResults()));
-                            multiSummaryObservableList.add(new MultiSummaryTable(new FirstFormMultiSummary(new CrispSet(currentStringVariable,subject2),
+                            multiSummaryObservableList.add(new MultiSummaryTable(new FirstFormMultiSubjectSummary(new CrispSet(currentStringVariable,subject2),
                                     new CrispSet(currentStringVariable,subject1),relativeQuantifierLabel,summarizerFinalMap).retrieveResults()));
                         });
                         for(int j=1;j<=filteredQualifiers.size();j++) {
@@ -767,13 +767,13 @@ public class MainView {
                                         qualifierFinalMap.put(qualifierVariable.toString(), qualifierVariableString);
                                     }
                                     relativeQuantifierLabels.forEach((relativeQuantifierLabel) -> {
-                                        multiSummaryObservableList.add(new MultiSummaryTable(new SecondFormMultiSummary(new CrispSet(currentStringVariable,subject1),
+                                        multiSummaryObservableList.add(new MultiSummaryTable(new SecondFormMultiSubjectSummary(new CrispSet(currentStringVariable,subject1),
                                                 new CrispSet(currentStringVariable,subject2),relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
-                                        multiSummaryObservableList.add(new MultiSummaryTable(new SecondFormMultiSummary(new CrispSet(currentStringVariable,subject2),
+                                        multiSummaryObservableList.add(new MultiSummaryTable(new SecondFormMultiSubjectSummary(new CrispSet(currentStringVariable,subject2),
                                                 new CrispSet(currentStringVariable,subject1),relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
-                                        multiSummaryObservableList.add(new MultiSummaryTable(new ThirdFormMultiSummary(new CrispSet(currentStringVariable,subject1),
+                                        multiSummaryObservableList.add(new MultiSummaryTable(new ThirdFormMultiSubjectSummary(new CrispSet(currentStringVariable,subject1),
                                                 new CrispSet(currentStringVariable,subject2),relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
-                                        multiSummaryObservableList.add(new MultiSummaryTable(new ThirdFormMultiSummary(new CrispSet(currentStringVariable,subject2),
+                                        multiSummaryObservableList.add(new MultiSummaryTable(new ThirdFormMultiSubjectSummary(new CrispSet(currentStringVariable,subject2),
                                                 new CrispSet(currentStringVariable,subject1),relativeQuantifierLabel,summarizerFinalMap,qualifierFinalMap).retrieveResults()));
                                     });
                                 });

@@ -5,7 +5,7 @@ import fuzzy.FuzzySet;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class MultiLinguisticSummary extends LinguisticSummary{
+public abstract class MultiSubjectLinguisticSummary extends LinguisticSummary{
     @Getter
     @Setter
     private CrispSet secondSubject;

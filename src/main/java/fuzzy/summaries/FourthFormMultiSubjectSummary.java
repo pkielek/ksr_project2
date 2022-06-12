@@ -13,14 +13,14 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class FourthFormMultiSummary extends MultiLinguisticSummary {
+public class FourthFormMultiSubjectSummary extends MultiSubjectLinguisticSummary {
     @Getter
     @Setter
     private Double symmetricSummaryT;
     @Getter
     @Setter
     private String symmetricSummary;
-    public FourthFormMultiSummary(CrispSet subject, CrispSet secondSubject, TreeMap<String,String> summarizersByVariableAndLabel) {
+    public FourthFormMultiSubjectSummary(CrispSet subject, CrispSet secondSubject, TreeMap<String,String> summarizersByVariableAndLabel) {
 
         setSummarizersByVariableAndLabel(summarizersByVariableAndLabel);
         setSubject(subject);

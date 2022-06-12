@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class SecondFormMultiSummary extends MultiLinguisticSummary {
+public class ThirdFormMultiSubjectSummary extends MultiSubjectLinguisticSummary {
 
-    public SecondFormMultiSummary(CrispSet subject, CrispSet secondSubject, String quantifierLabel, TreeMap<String,String> summarizersByVariableAndLabel, TreeMap<String,String> qualifiersByVariableAndLabel) {
+    public ThirdFormMultiSubjectSummary(CrispSet subject, CrispSet secondSubject, String quantifierLabel, TreeMap<String,String> summarizersByVariableAndLabel, TreeMap<String,String> qualifiersByVariableAndLabel) {
 
         setSummarizersByVariableAndLabel(summarizersByVariableAndLabel);
         setSubject(subject);
@@ -55,8 +55,8 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
 
         setSummary(quantifierLabel +
                 " reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
-                + "compared to reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix() +
-                " " + qualifierSummary + " " + summarizerSummary);
+                + " " + qualifierSummary + " compared to reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix() +
+                " " + summarizerSummary);
 
         setQuantifierLabel(quantifierLabel);
 
@@ -78,16 +78,15 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
             throw new IllegalArgumentException("No qualifiers in summary");
         }
         String firstQualifierKey = qualifiersByVariableAndLabel.firstKey();
-        setQualifierResultSet(new FuzzySet(secondSubject, LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getName(),LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getLabels().get(qualifiersByVariableAndLabel.firstEntry().getValue())));
+        setQualifierResultSet(new FuzzySet(subject, LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getName(),LBR.getVariables().get(NumericVariable.valueOf(firstQualifierKey)).getLabels().get(qualifiersByVariableAndLabel.firstEntry().getValue())));
         qualifiersByVariableAndLabel.forEach((k,v) -> {
             if(!k.equals(firstQualifierKey)) {
-                setQualifierResultSet(getQualifierResultSet().And(new FuzzySet(secondSubject,LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v))));
+                setQualifierResultSet(getQualifierResultSet().And(new FuzzySet(subject,LBR.getVariables().get(NumericVariable.valueOf(k)).getName(),LBR.getVariables().get(NumericVariable.valueOf(k)).getLabels().get(v))));
             }
         });
 
         setFirstSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> subject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
         setSecondSubjectSummaryResultSet(new FuzzySet(getSummaryResultSet().getEntries().entrySet().stream().filter(k -> secondSubject.getEntries().get(k.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, TreeMap::new))));
-
 
         calcTByQuantifier(quantifierLabel);
     }
@@ -98,12 +97,13 @@ public class SecondFormMultiSummary extends MultiLinguisticSummary {
         int firstSubjectCount = getSubject().count();
         int secondSubjectCount = getSecondSubject().count();
 
-        Double firstSubjectSummarizerSigmaCount = getFirstSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum);
+        Double firstSubjectSummarizerSigmaCount = getFirstSubjectSummaryResultSet().And(getQualifierResultSet()).getEntries().values().stream().reduce(0.0,Double::sum);
+
 
         setT(LBR.getVariables().get(NumericVariable.relativeQuantifier).getLabels().get(quantifierLabel).calcValue(
                 (firstSubjectSummarizerSigmaCount/firstSubjectCount)/(
                         (firstSubjectSummarizerSigmaCount/firstSubjectCount)+
-                                (getSecondSubjectSummaryResultSet().And(getQualifierResultSet()).getEntries().values().stream().reduce(0.0,Double::sum)/secondSubjectCount)
+                                (getSecondSubjectSummaryResultSet().getEntries().values().stream().reduce(0.0,Double::sum)/secondSubjectCount)
                 )
         ));
     }
