@@ -12,12 +12,12 @@ import java.util.HashMap;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SummaryTable {
+public class SingleSummaryTable {
     private SimpleStringProperty resultSummary;
     private HashMap<String,SimpleStringProperty> stringProperties;
     private SimpleBooleanProperty isSelected = new SimpleBooleanProperty(false);
 
-    public SummaryTable(SummaryResult summaryResult) {
+    public SingleSummaryTable(SummaryResult summaryResult) {
         stringProperties = new HashMap<>();
         this.resultSummary = new SimpleStringProperty(summaryResult.getSummary());
         for(int i=1;i<=11;i++) {

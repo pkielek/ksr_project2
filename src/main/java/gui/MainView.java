@@ -2,7 +2,8 @@ package gui;
 
 import fuzzy.*;
 import fuzzy.summaries.SummaryResult;
-import gui.helpers.SummaryTable;
+import gui.helpers.MultiSummaryTable;
+import gui.helpers.SingleSummaryTable;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -29,25 +30,25 @@ import java.util.regex.Pattern;
 
 public class MainView {
 
-    public TableView<SummaryTable> singleFormTable;
-    public TableColumn<SummaryTable, String> singleFormResult;
-    public TableColumn<SummaryTable, String> singleFormT1;
-    public TableColumn<SummaryTable, String> singleFormT2;
-    public TableColumn<SummaryTable, String> singleFormT3;
-    public TableColumn<SummaryTable, String> singleFormT4;
-    public TableColumn<SummaryTable, String> singleFormT5;
-    public TableColumn<SummaryTable, String> singleFormT6;
-    public TableColumn<SummaryTable, String> singleFormT7;
-    public TableColumn<SummaryTable, String> singleFormT8;
-    public TableColumn<SummaryTable, String> singleFormT9;
-    public TableColumn<SummaryTable, String> singleFormT10;
-    public TableColumn<SummaryTable, String> singleFormT11;
-    public TableColumn<SummaryTable, String> singleFormOptimum;
-    public TableColumn<SummaryTable, Boolean> singleFormTableCheckBox;
-    public TableView<SummaryTable> multiFormTable;
-    public TableColumn<SummaryTable, String> multiFormResult;
-    public TableColumn<SummaryTable, String> multiFormT;
-    public TableColumn<SummaryTable, Boolean> multiFormTableCheckBox;
+    public TableView<SingleSummaryTable> singleFormTable;
+    public TableColumn<SingleSummaryTable, String> singleFormResult;
+    public TableColumn<SingleSummaryTable, String> singleFormT1;
+    public TableColumn<SingleSummaryTable, String> singleFormT2;
+    public TableColumn<SingleSummaryTable, String> singleFormT3;
+    public TableColumn<SingleSummaryTable, String> singleFormT4;
+    public TableColumn<SingleSummaryTable, String> singleFormT5;
+    public TableColumn<SingleSummaryTable, String> singleFormT6;
+    public TableColumn<SingleSummaryTable, String> singleFormT7;
+    public TableColumn<SingleSummaryTable, String> singleFormT8;
+    public TableColumn<SingleSummaryTable, String> singleFormT9;
+    public TableColumn<SingleSummaryTable, String> singleFormT10;
+    public TableColumn<SingleSummaryTable, String> singleFormT11;
+    public TableColumn<SingleSummaryTable, String> singleFormOptimum;
+    public TableColumn<SingleSummaryTable, Boolean> singleFormTableCheckBox;
+    public TableView<MultiSummaryTable> multiFormTable;
+    public TableColumn<MultiSummaryTable, String> multiFormResult;
+    public TableColumn<MultiSummaryTable, String> multiFormT;
+    public TableColumn<MultiSummaryTable, Boolean> multiFormTableCheckBox;
 
     @FXML
     TreeView<String> treeViewCheckBox;
@@ -130,8 +131,8 @@ public class MainView {
     HashMap<String, Double> weights;
     HashMap<String,TextField> textFields;
 
-    ObservableList<SummaryTable> singleSummaryObservableList = FXCollections.observableArrayList();
-    ObservableList<SummaryTable> multiSummaryObservableList = FXCollections.observableArrayList();
+    ObservableList<SingleSummaryTable> singleSummaryObservableList = FXCollections.observableArrayList();
+    ObservableList<MultiSummaryTable> multiSummaryObservableList = FXCollections.observableArrayList();
 
 
     @FXML
@@ -163,10 +164,38 @@ public class MainView {
         weights.put("t10",0.0);
         weights.put("t11",0.0);
         weights.put("Optimum",0.5);
-        SummaryTable sst1 = new SummaryTable(new SummaryResult("raz",weights));
-        SummaryTable sst2 = new SummaryTable(new SummaryResult("dwa",weights));
-        SummaryTable sst3 = new SummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights));
+        SingleSummaryTable sst1 = new SingleSummaryTable(new SummaryResult("raz",weights));
+        SingleSummaryTable sst2 = new SingleSummaryTable(new SummaryResult("dwa",weights));
+        SingleSummaryTable sst3 = new SingleSummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights));
         singleSummaryObservableList.addAll(sst1, sst2, sst3);
+
+        HashMap<String,Double> weights1 = new HashMap<>();
+        weights1.put("t1",0.1);
+        weights1.put("t2",0.06);
+        weights1.put("t3",0.004);
+        weights1.put("t4",0.4);
+        weights1.put("t5",0.5);
+        weights1.put("t6",0.6);
+        weights1.put("t7",0.7);
+        weights1.put("t8",0.8);
+        weights1.put("t9",0.9);
+        weights1.put("t10",0.0);
+        weights1.put("t11",0.0);
+        weights1.put("Optimum",0.5);
+        SingleSummaryTable sst11 = new SingleSummaryTable(new SummaryResult("raz",weights1));
+        SingleSummaryTable sst21 = new SingleSummaryTable(new SummaryResult("dwa",weights1));
+        SingleSummaryTable sst31 = new SingleSummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights));
+        singleSummaryObservableList.addAll(sst11, sst21, sst31);
+
+
+        HashMap<String,Double> weights2 = new HashMap<>();
+        weights2.put("t",0.1);
+        MultiSummaryTable sst12 = new MultiSummaryTable(new SummaryResult("raz",weights2));
+        weights2.put("t",0.2);
+        MultiSummaryTable sst22 = new MultiSummaryTable(new SummaryResult("dwa",weights2));
+        weights2.put("t",0.001);
+        MultiSummaryTable sst32 = new MultiSummaryTable(new SummaryResult("trzyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",weights2));
+        multiSummaryObservableList.addAll(sst12, sst22, sst32);
 
         singleFormTableCheckBox.setCellFactory(cellData -> new CheckBoxTableCell<>());
         singleFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
@@ -182,29 +211,30 @@ public class MainView {
         singleFormT10.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t10"));
         singleFormT11.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t11"));
         singleFormOptimum.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("Optimum"));
-        setIsSelectedCheckBox(sst1, sst2, sst3, singleFormTableCheckBox, singleFormTable);
+        singleFormTableCheckBox.setCellValueFactory(cellData -> {
+            SingleSummaryTable cellValue = cellData.getValue();
+            SimpleBooleanProperty property = cellValue.getIsSelected();
+            property.addListener((observable, oldValue, newValue) ->
+                    cellValue.setIsSelected(new SimpleBooleanProperty(newValue)));
+            return property;
+        });
+        singleFormTable.setEditable(true);
         singleFormTable.setItems(singleSummaryObservableList);
 
 
         multiFormTableCheckBox.setCellFactory(cellData -> new CheckBoxTableCell<>());
         multiFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
         multiFormT.setCellValueFactory(cellData -> cellData.getValue().getStringProperties().get("t"));
-        setIsSelectedCheckBox(sst1, sst2, sst3, multiFormTableCheckBox, multiFormTable);
-        multiFormTable.setItems(multiSummaryObservableList);
-
-    }
-
-    private void setIsSelectedCheckBox(SummaryTable sst1, SummaryTable sst2, SummaryTable sst3,
-                                       TableColumn<SummaryTable, Boolean> anyFormTableCheckBox,
-                                       TableView<SummaryTable> anyFormTable) {
-        anyFormTableCheckBox.setCellValueFactory(cellData -> {
-            SummaryTable cellValue = cellData.getValue();
+        multiFormTableCheckBox.setCellValueFactory(cellData -> {
+            MultiSummaryTable cellValue = cellData.getValue();
             SimpleBooleanProperty property = cellValue.getIsSelected();
             property.addListener((observable, oldValue, newValue) ->
                     cellValue.setIsSelected(new SimpleBooleanProperty(newValue)));
             return property;
         });
-        anyFormTable.setEditable(true);
+        multiFormTable.setEditable(true);
+        multiFormTable.setItems(multiSummaryObservableList);
+
     }
 
     private void initializeTreeBoxCells() {
