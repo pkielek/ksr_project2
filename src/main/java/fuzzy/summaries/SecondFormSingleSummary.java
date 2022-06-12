@@ -3,6 +3,7 @@ package fuzzy.summaries;
 import fuzzy.CrispSet;
 import fuzzy.FuzzySet;
 import fuzzy.LinguisticVariableRepository;
+import gui.MainView;
 import model.HotelBookingRepository;
 import model.NumericVariable;
 
@@ -89,7 +90,7 @@ public class SecondFormSingleSummary extends LinguisticSummary {
             }
         });
 
-        initializeWeights();
+        updateWeights();
         calcMeasures();
     }
 
@@ -105,6 +106,12 @@ public class SecondFormSingleSummary extends LinguisticSummary {
         weights.put("t9",1.0);
         weights.put("t10",1.0);
         weights.put("t11",1.0);
+    }
+
+    private void updateWeights() {
+        for(int i=1;i<=11;i++) {
+            this.weights.put("t"+i, MainView.weights.get("t"+i));
+        }
     }
 
     private void calcMeasures() {

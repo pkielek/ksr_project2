@@ -144,7 +144,7 @@ public class MainView {
 
     LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
 
-    HashMap<String, Double> weights;
+    public static HashMap<String, Double> weights;
     HashMap<String,TextField> textFields;
 
     @FXML

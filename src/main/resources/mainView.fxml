@@ -112,7 +112,7 @@
                                                 <Insets left="20.0" right="20.0" top="30.0" />
                                              </padding>
                                           </VBox>
-                                          <TreeView fx:id="treeViewCheckBox" prefHeight="485.0" prefWidth="215.0" />
+                                          <TreeView fx:id="treeViewCheckBox" prefHeight="485.0" prefWidth="215.0" VBox.vgrow="ALWAYS" />
                                        </children>
                                     </VBox>
                                  </children>
