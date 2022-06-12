@@ -21,8 +21,16 @@ public class CrispSet implements SetOperations<CrispSet> {
     private TreeMap<Integer, Boolean> entries;
 
     public CrispSet(StringVariable variable, String filterValue) {
+        String filterValue1;
         this.variable = variable;
-        this.filterValue = WordUtils.capitalizeFully(filterValue.replace('_',' '));
+        filterValue1 = WordUtils.capitalizeFully(filterValue.replace('_',' '));
+        if(filterValue1.contains("-")) {
+            int index = filterValue1.indexOf("-");
+            StringBuilder builder = new StringBuilder(filterValue1);
+            builder.setCharAt(index+1,Character.toUpperCase(filterValue1.charAt(index+1)));
+            filterValue1 = builder.toString();
+        }
+        this.filterValue = filterValue1;
         this.entries = new TreeMap<>();
         if (variable==StringVariable.countryCode && CountryCode.findByName(filterValue).isEmpty()) {
             throw new IllegalArgumentException("No such country found");

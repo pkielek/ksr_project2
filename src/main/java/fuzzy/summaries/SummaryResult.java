@@ -12,8 +12,8 @@ import java.util.HashMap;
 @AllArgsConstructor
 @ToString
 public class SummaryResult {
-    String summary;
-    HashMap<String,Double> measures;
+    private String summary;
+    private HashMap<String,Double> measures;
 
     public String toCsvLine() {
         StringBuilder builder = new StringBuilder();
