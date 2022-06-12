@@ -1,42 +1,48 @@
 package gui;
 
 import fuzzy.*;
+import gui.helpers.SingleSummaryTable;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-import javafx.util.converter.NumberStringConverter;
-import model.HotelBookingRepository;
 import model.NumericVariable;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 public class MainView {
+
+    public TableView<SingleSummaryTable> singleFirstFormTable;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormResult;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT1;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT2;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT3;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT4;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT5;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT6;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT7;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT8;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT9;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT10;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormT11;
+    public TableColumn<SingleSummaryTable, String> singleFirstFormOptimum;
+
+    @FXML
+    TreeView<String> treeViewCheckBox;
     @FXML
     TextField t1Field;
     @FXML
@@ -111,10 +117,12 @@ public class MainView {
     Label errorLabel;
 
 
-
     LinguisticVariableRepository LBR = LinguisticVariableRepository.getInstance();
+
     HashMap<String, Double> weights;
     HashMap<String,TextField> textFields;
+
+    ObservableList<SingleSummaryTable> singleSummaryObservableList = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
@@ -127,6 +135,75 @@ public class MainView {
         initializeWeights();
         initializeAdvanced();
         initializeMembershipSelects();
+        initializeTreeBoxCells();
+        initializeTable();
+    }
+
+    private void initializeTable() {
+        singleFirstFormTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        SingleSummaryTable sst1 = new SingleSummaryTable("raz", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
+        SingleSummaryTable sst2 = new SingleSummaryTable("dwa", "0.2", "0.2", "0.2", "0.2", "0.2", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
+        SingleSummaryTable sst3 = new SingleSummaryTable("trzy", "0.3", "0.3", "0.3", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1", "0.1","0.1", "0.1");
+        singleSummaryObservableList.addAll(sst1, sst2, sst3);
+
+        singleFirstFormResult.setCellValueFactory(cellData -> cellData.getValue().getResultSummary());
+        singleFirstFormT1.setCellValueFactory(cellData -> cellData.getValue().getT1());
+        singleFirstFormT2.setCellValueFactory(cellData -> cellData.getValue().getT2());
+        singleFirstFormT3.setCellValueFactory(cellData -> cellData.getValue().getT3());
+        singleFirstFormT4.setCellValueFactory(cellData -> cellData.getValue().getT4());
+        singleFirstFormT5.setCellValueFactory(cellData -> cellData.getValue().getT5());
+        singleFirstFormT6.setCellValueFactory(cellData -> cellData.getValue().getT6());
+        singleFirstFormT7.setCellValueFactory(cellData -> cellData.getValue().getT7());
+        singleFirstFormT8.setCellValueFactory(cellData -> cellData.getValue().getT8());
+        singleFirstFormT9.setCellValueFactory(cellData -> cellData.getValue().getT9());
+        singleFirstFormT10.setCellValueFactory(cellData -> cellData.getValue().getT10());
+        singleFirstFormT11.setCellValueFactory(cellData -> cellData.getValue().getT11());
+        singleFirstFormOptimum.setCellValueFactory(cellData -> cellData.getValue().getOptimum());
+        singleFirstFormTable.getItems().addAll(sst1, sst2, sst3);
+        singleFirstFormTable.setItems(singleSummaryObservableList);
+
+    }
+
+    private void initializeTreeBoxCells() {
+        CheckBoxTreeItem<String> treeRoot = new CheckBoxTreeItem<>("Database");
+
+        CheckBoxTreeItem<String> subject1 = new CheckBoxTreeItem<>("Subject 1");
+        CheckBoxTreeItem<String> subject2 = new CheckBoxTreeItem<>("Subject 2");
+        CheckBoxTreeItem<String> relativeQuantifier = new CheckBoxTreeItem<>("Relative Quantifier");
+        CheckBoxTreeItem<String> absoluteQuantifier = new CheckBoxTreeItem<>("Absolute Quantifier");
+        CheckBoxTreeItem<String> summarizer = new CheckBoxTreeItem<>("Summarizers");
+        CheckBoxTreeItem<String> qualifier = new CheckBoxTreeItem<>("Qualifiers");
+
+        subject1.getChildren().addAll(new CheckBoxTreeItem<>("Portugal"),
+                new CheckBoxTreeItem<>("United Kingdom"),
+                new CheckBoxTreeItem<>("Germany"),
+                new CheckBoxTreeItem<>("Spain"));
+
+        subject2.getChildren().addAll(new CheckBoxTreeItem<>("Portugal"),
+                new CheckBoxTreeItem<>("United Kingdom"),
+                new CheckBoxTreeItem<>("Germany"),
+                new CheckBoxTreeItem<>("Spain"));
+
+        for (NumericVariable variable : NumericVariable.values()) {
+            if (!variable.name().equals(NumericVariable.undefined.name())) {
+                if (variable.name().equals(NumericVariable.relativeQuantifier.name())) {
+                    LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
+                            relativeQuantifier.getChildren().add(new CheckBoxTreeItem<>(k+" "+variable.getSummarizerTitle())));
+                } else if (variable.name().equals(NumericVariable.absoluteQuantifier.name())) {
+                    LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
+                            absoluteQuantifier.getChildren().add(new CheckBoxTreeItem<>(k+" "+variable.getSummarizerTitle())));
+                } else {
+                    CheckBoxTreeItem<String> newCheckBox = new CheckBoxTreeItem<>(variable.getSummarizerTitle());
+                    LBR.getVariables().get(variable).getLabels().forEach((k,v) ->
+                            newCheckBox.getChildren().add(new CheckBoxTreeItem<>(k+" "+variable.getSummarizerTitle())));
+                    summarizer.getChildren().add(newCheckBox);
+                    qualifier.getChildren().add(newCheckBox);
+                }
+            }
+        }
+        treeRoot.getChildren().addAll(subject1, subject2, relativeQuantifier, absoluteQuantifier, summarizer, qualifier);
+        treeViewCheckBox.setRoot(treeRoot);
+        treeViewCheckBox.setCellFactory(CheckBoxTreeCell.forTreeView());
     }
 
     private void initializeWeights() {

@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.control.TreeView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainView">
+<AnchorPane prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainView">
    <children>
       <TabPane prefHeight="468.0" prefWidth="733.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -42,7 +31,26 @@
                                       <tabs>
                                         <Tab text="Single-subject summaries">
                                           <content>
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" />
+                                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                                                   <children>
+                                                      <TableView fx:id="singleFirstFormTable" prefHeight="548.0" prefWidth="788.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <columns>
+                                                          <TableColumn fx:id="singleFirstFormResult" prefWidth="140.0" text="Linguistic Summary" />
+                                                          <TableColumn fx:id="singleFirstFormT1" prefWidth="42.0" text="T1" />
+                                                            <TableColumn fx:id="singleFirstFormT2" prefWidth="42.0" text="T2" />
+                                                            <TableColumn fx:id="singleFirstFormT3" prefWidth="42.0" text="T3" />
+                                                            <TableColumn fx:id="singleFirstFormT4" prefWidth="42.0" text="T4" />
+                                                            <TableColumn fx:id="singleFirstFormT5" prefWidth="42.0" text="T5" />
+                                                            <TableColumn fx:id="singleFirstFormT6" prefWidth="42.0" text="T6" />
+                                                            <TableColumn fx:id="singleFirstFormT7" prefWidth="42.0" text="T7" />
+                                                            <TableColumn fx:id="singleFirstFormT8" prefWidth="42.0" text="T8" />
+                                                            <TableColumn fx:id="singleFirstFormT9" prefWidth="42.0" text="T9" />
+                                                            <TableColumn fx:id="singleFirstFormT10" prefWidth="42.0" text="T10" />
+                                                            <TableColumn fx:id="singleFirstFormT11" prefWidth="42.0" text="T11" />
+                                                            <TableColumn fx:id="singleFirstFormOptimum" prefWidth="42.0" text="Optimum" />
+                                                        </columns>
+                                                      </TableView>
+                                                   </children></AnchorPane>
                                           </content>
                                         </Tab>
                                         <Tab text="Multi-subject summaries">
@@ -52,7 +60,7 @@
                                         </Tab>
                                       </tabs>
                                     </TabPane>
-                                    <TreeView prefHeight="503.0" prefWidth="225.0" />
+                                    <TreeView fx:id="treeViewCheckBox" prefHeight="503.0" prefWidth="225.0" />
                                  </children>
                                  <VBox.margin>
                                     <Insets />
