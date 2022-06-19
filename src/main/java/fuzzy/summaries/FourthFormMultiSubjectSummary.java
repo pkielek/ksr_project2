@@ -51,7 +51,7 @@ public class FourthFormMultiSubjectSummary extends MultiSubjectLinguisticSummary
         });
         setSummary(
                 "More reservations " + subject.getVariable().getPrefix() + " " + subject.getFilterValue() + " " + subject.getVariable().getPostfix()
-                        + " than reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
+                        + "than reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
                         + summarizerSummary);
 //        setSymmetricSummary(
 //                "More reservations " + secondSubject.getVariable().getPrefix() + " " + secondSubject.getFilterValue() + " " + secondSubject.getVariable().getPostfix()
